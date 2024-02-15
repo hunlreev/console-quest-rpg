@@ -2,7 +2,7 @@
 Module Name: run.py
 Description: Initializes the game in the console/terminal.
 Author: Hunter Reeves
-Date: 2024-02-13
+Date: 2024-02-15
 '''
 
 # Modules
