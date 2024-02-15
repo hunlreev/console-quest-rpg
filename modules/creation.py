@@ -25,8 +25,6 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
 
     # Select birthsign section
     birthsign_options = ['The Warrior', 'The Mage', 'The Rogue']
-    
-    # Test
 
 def select_race(name, art_race, menu_line):
     """
