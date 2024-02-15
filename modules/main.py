@@ -43,14 +43,14 @@ def initialize_game():
             print("> Current Location: Unknown")
             menu_line()
             # Persistent stats for viewing at all times
-            print(f"> Welcome {name}, the {race}! Born under {birth_sign}.")
+            print(f"> Welcome {name}, the {race}! Born under {birth_sign} sign.")
             menu_line()
-            # See attributes (debug)
             print("> Attributes:")
-            for attr_name, attr_value in zip(["Strength", "Endurance", "Intelligence", "Willpower", "Agility", "Speed"], attributes):
-                print(f"+ {attr_value} - {attr_name}")
+            for attr_name, attr_value in attributes.items():
+                print(f" + {attr_value} - {attr_name}")
             menu_line()
             # Continue the game here...
+            print("What would you like to do?")
             console_input()
         elif user_input == '2':
             # Load an existing character (not yet implemented)
