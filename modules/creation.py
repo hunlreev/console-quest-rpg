@@ -26,7 +26,6 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
     # Select birthsign section
     birthsign_options = ['The Warrior', 'The Mage', 'The Rogue']
 
-
 def select_race(name, art_race, menu_line):
     """
     Handles the menu and selection of the player's race.
