@@ -4,6 +4,7 @@ Description: Contains the strings of ASCII art used in the game.
 Author: Hunter Reeves
 Date: 2024-02-15
 '''
+
 def art_rogue():
     """
     Prints art for warrior

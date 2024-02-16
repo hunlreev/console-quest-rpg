@@ -8,6 +8,9 @@ Date: 2024-02-15
 # Modules
 from modules.menu import console_input, clear_console, main_menu, new_game, load_game, about_game, menu_line
 from modules.console_art import art_main_menu
+
+# Classes
+from classes.Player import Player
     
 def initialize_game():
     """
@@ -37,23 +40,28 @@ def initialize_game():
         if user_input == '1':
             # Start a new character
             name, race, birth_sign, player_class, attributes = new_game()
+            player = Player(name, race, birth_sign, player_class, attributes)
             # Clean up the console for the start of the game
             clear_console()
             art_main_menu()
             menu_line()
-            print(f" - Welcome {name}!")
+            print(f" - Welcome {player.name}!")
             menu_line()
             # Print current location (placeholder for now)
             print(" - Current Location: Unknown")
             menu_line()
             # Persistent stats for viewing at all times
-            print(f" - Race: {race}")
-            print(f" - Birthsign: {birth_sign}")
-            print(f" - Class: {player_class}")
+            print(f" - Race: {player.race}")
+            print(f" - Birthsign: {player.birth_sign}")
+            print(f" - Class: {player.player_class}")
             menu_line()
             print(" - Attributes:")
-            for attr_name, attr_value in attributes.items():
+            for attr_name, attr_value in player.attributes.items():
                 print(f" + {attr_value} - {attr_name}")
+            menu_line()
+            print(" - Stats:")
+            for stat_name, stat_value in player.stats.items():
+                print(f" + {stat_name}: {stat_value}/{stat_value}")
             menu_line()
             # Continue the game here...
             print(" * What would you like to do:")
