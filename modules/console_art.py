@@ -4,10 +4,154 @@ Description: Contains the strings of ASCII art used in the game.
 Author: Hunter Reeves
 Date: 2024-02-15
 '''
+def art_rogue():
+    """
+    Prints art for warrior
+    
+    Parameters:
+        None.
+
+    Returns
+        None.
+    """
+
+    rogue = """
+                         _,._
+                       ,'   ,`-.
+            |.        /     |\  `.
+            \ \      (  ,-,-` ). `-._ __
+             \ \      \|\,'     `\  /'  `\\
+              \ \      ` |, ,  /  \ \     \\
+               \ \         `,_/`, /\,`-.__/`.
+                \ \            | ` /    /    `-._
+                 \\\           `-/'    /         `-.
+                  \\`/ _______,-/_   /'             \\
+                 ---'`|       |`  ),' `---.  ,       |
+                  \..-`--..___|_,/          /       /
+                             |    |`,-,...,/      ,'
+                             \    | |_|   /     ,' __  r-'',
+                              |___|/  |, /  __ /-''  `'`)  |
+                           _,-'   ||__\ /,-' /     _,.--|  (
+                        .-'       )   `(_   / _,.-'  ,-' _,/
+                         `-------'       `--''       `'''
+"""
+
+    print(rogue)
+
+def art_mage():
+    """
+    Prints art for warrior
+    
+    Parameters:
+        None.
+
+    Returns
+        None.
+    """
+
+    mage = """
+                                      _,-'|
+                                   ,-'._  |
+                         .||,      |####\ |
+                        \.`',/     \####| |
+                        = ,. =      |###| |
+                        / || \    ,-'\#/,'`.
+                          ||     ,'   `,,. `.
+                          ,|____,' , ,;' \| |
+                         (3|\    _/|/'   _| |
+                          ||/,-''  | >-'' _,\\
+                          ||'      ==\ ,-'  ,'
+                          ||       |  V \ ,|
+                          ||       |    |` |
+                          ||       |    |   \\
+                          ||       |    \    \\
+                          ||       |     |    \\
+                          ||       |      \_,-'
+                          ||       |___,,--")_\\
+                          ||         |_|   ccc/
+                          ||        ccc/
+                          ||                
+"""
+
+    print(mage)
+
+def art_warrior():
+    """
+    Prints art for warrior
+
+    Parameters:
+        None.
+
+    Returns
+        None.
+    """
+
+    warrior = """
+                        /\\
+                        ||
+                        ||
+                        ||
+                        ||          \{\}
+                        ||          .--.
+                        ||         /.--.\\
+                        ||         |====|
+                        ||         |`::`|
+                       _||_    .-;`\..../`;_.-^-._
+                        /\   /  |...::..|`   :   `|
+                       |:'\ |   /'''::''|   .:.   |
+                        \ /\;-,/\   ::  |..:::::..|
+                         \ <` >  >._::_.| ':::::' |
+                          `""`  /   ^^  |   ':'   |
+                                |       \    :    /
+                                |        \   :   /
+                                |___/\___|`-.:.-`
+                                 \_ || _/    `
+                                 <_ >< _>
+                                 |  ||  |
+                                 |  ||  |
+                                _\.:||:./_
+                               /____/\____\\
+"""
+
+    print(warrior)
+
+def art_class():
+    """
+    Prints art for class menu
+
+    Parameters:
+        None.
+
+    Returns
+        None.
+    """
+
+    something = """
+                                                _.gd8888888bp._
+                                             .g88888888888888888p.
+                                            .d8888P""       ""Y8888b.
+                                           "Y8P"               "Y8P'
+                                             `.               ,'
+                                               \     .-.     /
+                                                \   (___)   /
+     .------------------._______________________:__________j
+     /                   |                      |           |`-.,_
+     \###################|######################|###########|,-'`
+     `------------------'                       :    ___   l
+                                                /   (   )   \\
+                                               /     `-'     \\
+                                             ,'               `.
+                                          .d8b.               .d8b.
+                                          "Y8888p..       ,.d8888P"
+                                            "Y88888888888888888P"
+                                               ""YY8888888PP""
+"""
+
+    print(something)
 
 def art_birthsign():
     """
-    Prints art of stars for the birthsign menu
+    Prints art for birthsign menu
 
     Parameters:
         None.
@@ -38,7 +182,7 @@ def art_birthsign():
 
 def art_race():
     """
-    Prints art of a planet and stars for the race menu.
+    Prints art for race menu
     
     Parameters:
         None.
@@ -69,7 +213,7 @@ def art_race():
 
 def art_main_menu():
     """
-    Prints the dragon art at the top of the menu.
+    Prints art for main menu
     
     Parameters:
         None.

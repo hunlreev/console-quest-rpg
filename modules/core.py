@@ -19,7 +19,7 @@ def console_input():
         user_input(str): The string entered by the user.
     """
 
-    user_input = str(input("> "))
+    user_input = str(input(" > "))
 
     return user_input
 

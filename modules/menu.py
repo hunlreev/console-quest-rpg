@@ -7,8 +7,8 @@ Date: 2024-02-15
 
 # Modules
 from modules.core import console_input, clear_console
-from modules.console_art import art_main_menu, art_race, art_birthsign
-from modules.creation import select_race, select_birthsign
+from modules.console_art import art_main_menu, art_race, art_birthsign, art_class
+from modules.creation import select_race, select_birthsign, select_class
 
 # Imports
 import os
@@ -25,7 +25,8 @@ def return_to_menu():
     """
 
     # Wait for any key to be pressed before returning to the main menu
-    print("Press enter to return to the main menu...")
+    print(" * Press enter to return to the main menu...")
+    menu_line()
     console_input()
 
 def about_game():
@@ -45,15 +46,15 @@ def about_game():
     # Start 'About Game' section
     art_main_menu()
     menu_line()
-    print(" > About Console Quest RPG")
+    print(" ^ About Console Quest RPG")
     menu_line()
-    print("Console Quest RPG is an ASCII-based, text RPG inspired by several")
-    print("games such as the Elder Scrolls series, and classic ASCII games.")
-    print("\nTo play, simply follow along as you go and enter commands as needed.")
-    print("The game will guide you as you progress, so please... adventure on!")
-    print("\nIf you find any bugs, please let me know by shooting me a message")
-    print("over Discord. My username is SaxyButters! I welcome all messages!")
-    print("\nConsole Quest RPG was developed by Hunter Reeves. All rights reserved.")
+    print(" Console Quest RPG is an ASCII-based, text RPG inspired by several")
+    print(" games such as the Elder Scrolls series, and classic ASCII games.")
+    print("\n To play, simply follow along as you go and enter commands as needed.")
+    print(" The game will guide you as you progress, so please... adventure on!")
+    print("\n If you find any bugs, please let me know by shooting me a message")
+    print(" over Discord. My username is SaxyButters! I welcome all messages!")
+    print("\n Console Quest RPG was developed by Hunter Reeves. All rights reserved.")
     menu_line()
 
     return_to_menu()
@@ -75,10 +76,10 @@ def load_game():
     # Start 'Load Game' section
     art_main_menu()
     menu_line()
-    print(" > Load Game")
+    print(" ^ Load Game")
     menu_line()
 
-    print("Not yet implemented.")
+    print(" - Not yet implemented.")
     menu_line()
 
     return_to_menu()
@@ -100,11 +101,13 @@ def new_game():
     # Start 'New Game' section
     art_main_menu()
     menu_line()
-    print(" > New Game")
+    print(" ^ New Game")
     menu_line()
 
     # Enter character name
-    name = input("\nEnter thy name: ")
+    print(" * Enter thy name:")
+    menu_line()
+    name = input(" > ")
 
     # Clears existing console
     clear_console()
@@ -115,7 +118,11 @@ def new_game():
     # Select the character's birthsign (affects the attributes)
     birth_sign, attributes = select_birthsign(name, attributes, art_birthsign, menu_line)
 
-    return name, race, birth_sign, attributes
+    # Select the character's class (affects the attributes)
+    player_class, attributes = select_class(name, attributes, art_class, menu_line)
+
+    # Return all character information to create the Player
+    return name, race, birth_sign, player_class, attributes
 
 def main_menu():
     """
@@ -166,7 +173,7 @@ def menu_title(scalar = 26):
 
     print(" " * scalar + "-- Console Quest RPG --" + " " * scalar)
 
-def menu_selection(scalar = 50, version = "(v0.0.1-pre)"):
+def menu_selection(scalar = 49, version = "(v0.0.1-pre)"):
     """
     Prints the options in the menu for the player to choose from.
     

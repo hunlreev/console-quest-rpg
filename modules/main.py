@@ -29,28 +29,35 @@ def initialize_game():
         main_menu()
         
         # Get input from the user to select options from the main menu
+        print(" * Select an option from the menu above:")
+        menu_line()
         user_input = console_input()
 
         # Determine the selection
         if user_input == '1':
             # Start a new character
-            name, race, birth_sign, attributes = new_game()
+            name, race, birth_sign, player_class, attributes = new_game()
             # Clean up the console for the start of the game
             clear_console()
             art_main_menu()
             menu_line()
+            print(f" - Welcome {name}!")
+            menu_line()
             # Print current location (placeholder for now)
-            print("> Current Location: Unknown")
+            print(" - Current Location: Unknown")
             menu_line()
             # Persistent stats for viewing at all times
-            print(f"> Welcome {name}, the {race}! Born under {birth_sign} sign.")
+            print(f" - Race: {race}")
+            print(f" - Birthsign: {birth_sign}")
+            print(f" - Class: {player_class}")
             menu_line()
-            print("> Attributes:")
+            print(" - Attributes:")
             for attr_name, attr_value in attributes.items():
                 print(f" + {attr_value} - {attr_name}")
             menu_line()
             # Continue the game here...
-            print("What would you like to do?")
+            print(" * What would you like to do:")
+            menu_line()
             console_input()
         elif user_input == '2':
             # Load an existing character (not yet implemented)
