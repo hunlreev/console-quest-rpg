@@ -2,7 +2,7 @@
 Module Name: creation.py
 Description: Handles the selection of race, birthsign, and class for the player's character.
 Author: Hunter Reeves
-Date: 2024-02-15
+Date: 2024-02-17
 '''
 
 # Modules
@@ -11,11 +11,11 @@ from modules.console_art import art_warrior, art_mage, art_rogue
 
 # For printing the attributes to the screen at various locations
 m_attributes = " Strength\t- {}" + " " * 16 + "(Affects Max Stamina, Physical Damage)\n" \
-                " Endurance\t- {}" + " " * 19 + "(Health Increase, Physical Defense)\n" \
-                " Intelligence\t- {}" + " " * 20 + "(Affects Max Mana, Magical Damage)\n" \
-                " Willpower\t- {}" + " " * 22 + "(Mana Increase, Magical Defense)\n" \
-                " Agility\t- {}" + " " * 26 + "(Dodge Chance, Critical Hit)\n" \
-                " Speed\t\t- {}" + " " * 21 + "(Attack First, Effective Resting)"
+               " Endurance\t- {}" + " " * 16 + "(Affects Max Health, Physical Defense)\n" \
+               " Intelligence\t- {}" + " " * 20 + "(Affects Max Mana, Magical Damage)\n" \
+               " Willpower\t- {}" + " " * 16 + "(Spell Effectiveness, Magical Defense)\n" \
+               " Agility\t- {}" + " " * 26 + "(Dodge Chance, Critical Hit)\n" \
+               " Speed\t\t- {}" + " " * 21 + "(Attack First, Effective Resting)"
 
 def selection_menu(name, art, menu_line, options, type = ""):
     """
@@ -73,7 +73,7 @@ def select_class(name, attributes, art_class, menu_line):
     class_messages = {
         class_options[0]: " The Warrior class specializes in swords, maces, axes, and heavy armor.\n\n Their armor is a bit too heavy though, and slows them down in battle.\n Despite that, they are very defensive and have quite the health pool.\n",
         class_options[1]: " The Mage class specializes in staves, spellmagic, and enchantments.\n\n Their focus on magic tends to make them a bit aloof and cold.\n Despite that, they are excellent magic users and have a lot of knowledge.\n",
-        class_options[2]: " The Rogue class specializes in stealth, critical hits, and light armor.\n\n If they get caught, they can take quite a bit of damage.\n Despite that, they can deal extreme amounts of damage if well hidden.\n"
+        class_options[2]: " The Rogue class specializes in stealth, critical hits, and light armor.\n\n If they are caught, they can lose health very quickly.\n Despite that, they can deal extreme amounts of damage if well hidden.\n"
     }
     
     # Cycle through the class selection until a final decision is made
@@ -103,7 +103,7 @@ def select_class(name, attributes, art_class, menu_line):
             # Menu for describing the selected class
             art()
             menu_line()
-            print(f" - {name}, the {class_name}:")
+            print(f" ^ {name}, the {class_name}:")
             menu_line()
             # Iterate through attributes to display only the changed attributes on a single line
             changes = " - ".join([f"[{key} {'+' if class_attributes.get(key, 0) > 0 else '-'}{abs(class_attributes.get(key, 0))}]" for key in attributes if class_attributes.get(key, 0) != 0])
@@ -178,7 +178,7 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
             # Menu for describing the selected birthsign
             art_birthsign()
             menu_line()
-            print(f" - {name}, born under {birthsign_name} sign:")
+            print(f" ^ {name}, born under {birthsign_name} sign:")
             menu_line()
             # Iterate through attributes to display only the changed attributes on a single line
             changes = " - ".join([f"[{key} {'+' if birthsign_attributes.get(key, 0) > 0 else '-'}{abs(birthsign_attributes.get(key, 0))}]" for key in attributes if birthsign_attributes.get(key, 0) != 0])
@@ -255,7 +255,7 @@ def select_race(name, art_race, menu_line):
             # Menu for describing the selected race
             art_race()
             menu_line()
-            print(f" - {name}, the {race_name}:")
+            print(f" ^ {name}, the {race_name}:")
             menu_line()
             message = race_messages[race_name]
             

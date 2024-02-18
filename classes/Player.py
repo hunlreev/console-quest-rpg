@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other character classes inherit from.
 Author: Hunter Reeves
-Date: 2024-02-15
+Date: 2024-02-17
 '''
 
 class Player:
@@ -12,49 +12,42 @@ class Player:
         self.race = race
         self.birth_sign = birth_sign
         self.player_class = player_class
-        self.attributes = attributes
+        self.attributes = {attr: max(0, min(100, value)) for attr, value in attributes.items()}
         # Information after creation
-        self.stats = {'Health': self.attributes['Endurance'] * 2, 'Mana': self.attributes['Intelligence'] * 2, 'Stamina': self.attributes['Strength'] * 2}
-        self.max_stats = {'Health': self.stats['Health'], 'Mana': self.stats['Mana'], 'Stamina': self.stats['Stamina']}
         self.level = 1
         self.experience = 0
         self.next_experience = 100
-        
-    def set_starting_health(endurance):
-        """
-        Sets the starting health for the Player
-        
-        Parameters:
-            endurance (int): Value of Player's endurance
+        self.attribute_points = 0
+        self.stats = {
+            'Health': self.calculate_stat('Endurance', self.level),
+            'Mana': self.calculate_stat('Intelligence', self.level),
+            'Stamina': self.calculate_stat('Strength', self.level)
+        }
+        self.max_stats = {
+            'Health': self.stats['Health'], 
+            'Mana': self.stats['Mana'], 
+            'Stamina': self.stats['Stamina']
+        }
+        # For testing purposes
+        self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
+        self.stamina_cost = max(8, round(40 * (1.4 - 0.012 * attributes['Endurance'] - 0.0005 * self.level), 0))
+        self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
+        self.mana_cost = max(8, round(40 * (1.4 - 0.012 * attributes['Willpower'] - 0.0005 * self.level), 0))
+        self.critical_hit = round(1.5 * (1 + self.attributes['Agility'] / 100) + self.physical_attack + 0.09 * self.level, 0)
+        self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
+        self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
-        Returns
-            (int): The starting health for the Player
+    def calculate_stat(self, attribute, level, multiplier = 2):
         """
-        
-        return endurance * 2
+            Handles the math for calculating starting health, mana, and stamina.
     
-    def set_starting_mana(intelligence):
+            Parameters:
+                self (object): Player object
+                attribute (str): Attribute being used for the current stat.
+                multiplier (int): Multiplier for the math in the stat equation.
+            
+            Returns:
+                (int): The stat being calculated.
         """
-        Sets the starting mana for the Player
-        
-        Parameters:
-            intelligence (int): Value of Player's intelligence
 
-        Returns
-            (int): The starting mana for the Player
-        """
-        
-        return intelligence * 2
-    
-    def set_starting_stamina(strength):
-        """
-        Sets the starting stamina for the Player
-        
-        Parameters:
-            strength (int): Value of Player's strength
-
-        Returns
-            (int): The starting stamina for the Player
-        """
-        
-        return strength * 2
+        return round(self.attributes[attribute] * (multiplier + level * 0.025) - 1, 0)
