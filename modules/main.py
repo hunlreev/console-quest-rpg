@@ -30,6 +30,10 @@ def display_menu(player):
     menu_line()
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
     menu_line()
+    print(f" - Health: {player.stats['Health']}/{player.max_stats['Health']} | Mana: {player.stats['Mana']}/{player.max_stats['Mana']} | Stamina: {player.stats['Stamina']}/{player.max_stats['Stamina']}")
+    # print(f" - Mana: {player.stats['Mana']}/{player.max_stats['Mana']}")
+    # print(f" - Stamina: {player.stats['Stamina']}/{player.max_stats['Stamina']}")
+    menu_line()
     print(" * What would you like to do?")
     menu_line()
 

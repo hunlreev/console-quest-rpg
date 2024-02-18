@@ -30,10 +30,10 @@ class Player:
         }
         # For testing purposes
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
-        self.stamina_cost = max(8, round(40 * (1.4 - 0.012 * attributes['Endurance'] - 0.0005 * self.level), 0))
+        self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * attributes['Endurance'] - 0.0005 * self.level), 0))
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
-        self.mana_cost = max(8, round(40 * (1.4 - 0.012 * attributes['Willpower'] - 0.0005 * self.level), 0))
-        self.critical_hit = round(1.5 * (1 + self.attributes['Agility'] / 100) + self.physical_attack + 0.09 * self.level, 0)
+        self.mana_cost = max(8, round(30 * (1.4 - 0.012 * attributes['Willpower'] - 0.0005 * self.level), 0))
+        self.critical_hit = max(round(1.5 * (1 + (self.attributes['Agility'] * 5) / 100) + (self.physical_attack * 0.5) + 0.09 * self.level, 0), self.physical_attack)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 

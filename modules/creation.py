@@ -89,15 +89,15 @@ def select_class(name, attributes, art_class, menu_line):
         if option in ['1', '2', '3']:
             if option == '1':
                 class_name = class_options[0]
-                class_attributes = {'Endurance': 5, 'Speed': -5}
+                class_attributes = {'Strength': 5, 'Endurance': 5, 'Speed': -5}
                 art = art_warrior
             elif option == '2':
                 class_name = class_options[1]
-                class_attributes = {'Willpower': 5, 'Agility': -5}
+                class_attributes = {'Intelligence': 5, 'Willpower': 5, 'Agility': -5}
                 art = art_mage
             elif option == '3':
                 class_name = class_options[2]
-                class_attributes = {'Agility': 5, 'Endurance': -5}
+                class_attributes = {'Agility': 5, 'Speed': 5, 'Endurance': -5}
                 art = art_rogue
 
             # Menu for describing the selected class
@@ -223,7 +223,7 @@ def select_race(name, art_race, menu_line):
 
     # Custom message for each race
     race_messages = {
-        race_options[0]: " Humans are the most common race, found in cities across the planet. \n Many adventurers and conquerors of old have been of Human descent.\n\n Well-rounded, truly the jack of all trades. \n You can go in any direction you want as there are no debuffs for Humans.\n",
+        race_options[0]: " Humans are the most common race, found in cities across the planet. \n Many adventurers and conquerors of old have been of Human descent.\n\n Well-rounded, truly the jack of all trades with an even spread. \n You can go in any direction you want as a Human.\n",
         race_options[1]: " Elves are most often found along the mountains in the southeast. \n Wizards and scholars alike tend to be Elves. \n\n Superior in Intelligence and Willpower with excellent mana. \n The Elf tends to enjoy the highest comfort in all schools of magic.\n",
         race_options[2]: " Orcs live in clusters, typically in strongholds across the western coast. \n Incredibly strong and hardy - all Orcs share this in common. \n\n They boast high Strength and Endurance, but aren't very smart. \n Orcs tend to favor the warrior life, avoiding books.\n",
         race_options[3]: " Lynxarites prefer the tropical heat and warm sands of the equator. \n Nimble on their feet, they get out of trouble but cause even more. \n\n These cat-like beasts have higher Agility than most. \n As a Lynxarite, you'll always be one step ahead.\n",
@@ -233,10 +233,10 @@ def select_race(name, art_race, menu_line):
     # Attributes for each race
     attributes = {
         'Human': {'Strength': 40, 'Endurance': 40, 'Intelligence': 40, 'Willpower': 40, 'Agility': 40, 'Speed': 40},
-        'Elf': {'Strength': 35, 'Endurance': 35, 'Intelligence': 45, 'Willpower': 50, 'Agility': 35, 'Speed': 40},
-        'Orc': {'Strength': 45, 'Endurance': 50, 'Intelligence': 35, 'Willpower': 35, 'Agility': 40, 'Speed': 35},
-        'Lynxarite': {'Strength': 35, 'Endurance': 40, 'Intelligence': 35, 'Willpower': 40, 'Agility': 50, 'Speed': 40},
-        'Scalekin': {'Strength': 40, 'Endurance': 35, 'Intelligence': 40, 'Willpower': 35, 'Agility': 40, 'Speed': 50}
+        'Elf': {'Strength': 30, 'Endurance': 35, 'Intelligence': 50, 'Willpower': 45, 'Agility': 40, 'Speed': 40},
+        'Orc': {'Strength': 50, 'Endurance': 45, 'Intelligence': 30, 'Willpower': 35, 'Agility': 40, 'Speed': 40},
+        'Lynxarite': {'Strength': 35, 'Endurance': 30, 'Intelligence': 45, 'Willpower': 40, 'Agility': 50, 'Speed': 40},
+        'Scalekin': {'Strength': 45, 'Endurance': 40, 'Intelligence': 35, 'Willpower': 30, 'Agility': 40, 'Speed': 50}
     }
                    
     # Cycle through race selection until a final decision is made
