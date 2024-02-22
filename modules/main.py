@@ -178,7 +178,7 @@ def start_game(player):
         elif user_input == '7':
             player.use_physical()
         elif user_input == '8':
-            player.add_experience(55)
+            player.add_experience(95)
             if player.experience >= player.next_experience:
                 menu_line()
                 player.level_up()

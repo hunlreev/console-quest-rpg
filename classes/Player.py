@@ -61,7 +61,7 @@ class Player:
 
         return round(self.attributes[attribute] * (multiplier + level * 0.025) - 1, 0)
 
-    def generate_stat_bar(self, current, maximum, length = 20):
+    def generate_stat_bar(self, current, maximum, length = 46):
         """
             Display stats in a bar.
     
