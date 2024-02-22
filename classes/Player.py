@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other character classes inherit from.
 Author: Hunter Reeves
-Date: 2024-02-20
+Date: 2024-02-22
 '''
 
 # Modules
@@ -42,7 +42,7 @@ class Player:
         self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
-        self.critical_hit = max(round(1.5 * (1 + (self.attributes['Agility'] * 5) / 100) + (self.physical_attack * 0.5) + 0.09 * self.level, 0), self.physical_attack)
+        self.critical_hit = self.base_physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
@@ -81,6 +81,27 @@ class Player:
         display = f"({current}/{maximum})".rjust(10)
 
         return stat_bar, display
+
+    def generate_exp_bar(self, current, maximum, length = 44):
+        """
+            Display experience in a bar.
+    
+            Parameters:
+                self (object): Player object
+                current (int): Value of the current stat
+                maximum (int): Value of the max stat
+                length (int): Length of the stat bar
+            
+            Returns:
+                exp_bar (str): The experience bar
+                display (str): Stat in parathesis for actual value viewing
+        """
+
+        bar_length = int(length * (current / maximum))
+        exp_bar = f"[{'=' * bar_length}{' ' * (length - bar_length)}]"
+        display = f"({current}/{maximum})".rjust(5)
+
+        return exp_bar, display
 
     def rest(self):
         """
@@ -212,18 +233,25 @@ class Player:
             elif choice in ['1', '2', '3', '4', '5', '6']:
                 # Increment the chosen attribute
                 attribute_name = get_attribute_name(int(choice))
-                self.attributes[attribute_name] += 1
-                self.attribute_points -= 1
-                menu_line()
-                print(f" - {attribute_name} increased to {self.attributes[attribute_name]}.")
-                clear_console()
+
+                # Check if incrementing the attribute would exceed 100
+                if self.attributes[attribute_name] < 100:
+                    self.attributes[attribute_name] += 1
+                    self.attribute_points -= 1
+                    menu_line()
+                    print(f" - {attribute_name} increased to {self.attributes[attribute_name]}.")
+                    clear_console()
+                else:
+                    clear_console()
+                    menu_line()
+                    print(f" - {attribute_name} is already been maxed out. Please try again.")
             else:
                 return
 
         # Reset experience and update next experience for the next level
         self.experience = round(self.experience % self.next_experience, 0)
         self.level += 1
-        self.next_experience = round(self.next_experience * 1.33, 0)
+        self.next_experience = round(self.next_experience * 1.125, 0)
 
         # Update stat information to reflect new stats from level up
         self.stats = {
@@ -243,7 +271,7 @@ class Player:
         self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
-        self.critical_hit = max(round(1.5 * (1 + (self.attributes['Agility'] * 5) / 100) + (self.physical_attack * 0.5) + 0.09 * self.level, 0), self.physical_attack)
+        self.critical_hit = self.base_physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 

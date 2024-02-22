@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-02-19
+Date: 2024-02-22
 '''
 
 # Modules
@@ -31,7 +31,7 @@ def print_all_stats(player):
     menu_line()
     print(f" ^ {player.name}'s Stats")
     menu_line()
-    print(f" - Experience Needed: {player.experience}/{player.next_experience}")
+    print(f" - Available Attribute Points: {player.attribute_points}")
     menu_line()
     print(f" - Strength: {player.attributes['Strength']}")
     print(f" - Endurance: {player.attributes['Endurance']}")
@@ -42,7 +42,8 @@ def print_all_stats(player):
     menu_line()
     print(f" - Physical attack: {player.physical_attack}")
     print(f" - Magical attack: {player.magical_attack}")
-    print(f" - Critcal hit: {player.critical_hit}")
+    print(f" - Critcal attack: {player.critical_hit}")
+    menu_line()
     print(f" - Critcal chance: {player.critical_chance}")
     print(f" - Dodge chance: {player.dodge_chance}")
     menu_line()
@@ -80,6 +81,21 @@ def update_stat_bars(player):
     print(f" -  Health: {health_bar} " + h_display)
     print(f" -    Mana: {mana_bar} " + m_display)
     print(f" - Stamina: {stamina_bar} " + s_display)
+    
+def update_exp_bar(player):
+    """
+    Takes player experience and displays an experience bar
+
+    Parameters:
+        player (object): The player character.
+
+    Returns:
+        None.
+    """
+    
+    exp_bar, e_display = player.generate_exp_bar(player.experience, player.next_experience)
+
+    print(f" - EXP: {exp_bar} " + e_display)
 
 def display_menu(player):
     """
@@ -99,6 +115,8 @@ def display_menu(player):
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
     menu_line()
     update_stat_bars(player)
+    menu_line()
+    update_exp_bar(player)
     menu_line()
     print(" * What would you like to do?")
     menu_line()
@@ -125,7 +143,8 @@ def start_game(player):
     """
 
     # Debug - amount of stat points lost each time (for losing stats, updating the bars)
-    amount = 12.5
+    health_loss = 12.5
+    added_exp = 95
     
     # Exit to main menu if no player exits yet
     if player is None:
@@ -172,13 +191,13 @@ def start_game(player):
             time.sleep(seconds_to_wait)
         elif user_input == '5':
             # Debugging
-            player.lose_stat_points('Health', amount)
+            player.lose_stat_points('Health', health_loss)
         elif user_input == '6':
             player.cast_spell()
         elif user_input == '7':
             player.use_physical()
         elif user_input == '8':
-            player.add_experience(95)
+            player.add_experience(added_exp)
             if player.experience >= player.next_experience:
                 menu_line()
                 player.level_up()
