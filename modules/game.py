@@ -2,7 +2,7 @@
 Module Name: game.py
 Description: Core functionality for the main menu and starting the game
 Author: Hunter Reeves
-Date: 2024-02-17
+Date: 2024-02-19
 '''
 
 # Modules
@@ -44,6 +44,65 @@ def about_game():
     menu_line()
 
     return_to_menu()
+
+def delete_game():
+    """
+    Deletes an existing save file.
+
+    Parameters:
+        None.
+
+    Returns:
+        None.
+    """
+
+    clear_console()
+
+    saves_directory = "saves"  # Change this to your actual saves directory
+
+    # Check if saves directory exists
+    if not os.path.exists(saves_directory) or not os.path.isdir(saves_directory):
+        print("No saved games found.")
+        return
+
+    # List available saved games
+    saved_games = [file for file in os.listdir(saves_directory) if os.path.isfile(os.path.join(saves_directory, file))]
+    
+    if not saved_games:
+        return ""
+    
+    menu_line()
+    print(" * Select a save to delete (Enter 0 to cancel):")
+    menu_line()
+    for idx, game in enumerate(saved_games, start = 1):
+        save_name = os.path.splitext(game)[0]
+        print(f" {idx}. {save_name}")
+    menu_line()
+
+    try:
+        choice = int(input(" > "))
+    except ValueError:
+        print("Invalid input. Please enter a number.")
+        return
+
+    if 0 < choice <= len(saved_games):
+        selected_game = saved_games[choice - 1]
+        menu_line()
+        print(f" * Are you sure you want to delete this save? (Y/N)")
+        menu_line()
+        confirm = str(input(" > "))
+        
+        menu_line()
+
+        if confirm.lower() == 'y':
+            file_path = os.path.join(saves_directory, selected_game)
+            os.remove(file_path)
+        elif confirm.lower() == 'n':
+            return ""
+        else:
+            return ""
+    else:
+        return
 
 def load_game():
     """

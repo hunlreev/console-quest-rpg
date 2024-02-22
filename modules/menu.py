@@ -2,7 +2,7 @@
 Module Name: menu.py
 Description: Displays the menu at the start of the game as well as implements all of the options for the user.
 Author: Hunter Reeves
-Date: 2024-02-17
+Date: 2024-02-19
 '''
 
 # Modules
@@ -45,7 +45,7 @@ def pause_menu():
     print(" ^ Game Paused")
     menu_line()
     
-    options = {"Continue Playing": 1, "Save And Quit": 2, "Quit Without Saving": 3}
+    options = {"Continue Playing": 1, "Save And Quit": 2, "Delete A Save": 3, "Quit Without Saving": 4}
 
     # Display options in the menu
     for option, number in options.items():

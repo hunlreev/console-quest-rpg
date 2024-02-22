@@ -8,5 +8,9 @@ All versions of Console Quest RPG will be documented here, along with the change
 - Create a Player object with all information obtained through character creation
 - Added a menu once the game starts after character creation to allow the player to continue, save progress, or quit
 - Added functionality to to load an existing character in the "saves" folder
-- (WIP) Added functionality to be able to delete existing saves as well
+- Changed display to allow for stat bars for health, mana, and stamina
+- Added functionality to be able to delete existing saves as well
+- Added functionality to see stats at any time during the game
+- Added rest functionality based on Speed and Agility attribute
+- Added level up functionality and updates to all stats to reflect level up
 - Minor tweaks, changes, and bug fixes (as always)

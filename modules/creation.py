@@ -2,7 +2,7 @@
 Module Name: creation.py
 Description: Handles the selection of race, birthsign, and class for the player's character.
 Author: Hunter Reeves
-Date: 2024-02-17
+Date: 2024-02-19
 '''
 
 # Modules
@@ -15,7 +15,7 @@ m_attributes = " Strength\t- {}" + " " * 16 + "(Affects Max Stamina, Physical Da
                " Intelligence\t- {}" + " " * 20 + "(Affects Max Mana, Magical Damage)\n" \
                " Willpower\t- {}" + " " * 16 + "(Spell Effectiveness, Magical Defense)\n" \
                " Agility\t- {}" + " " * 26 + "(Dodge Chance, Critical Hit)\n" \
-               " Speed\t\t- {}" + " " * 21 + "(Attack First, Effective Resting)"
+               " Speed\t\t- {}" + " " * 24 + "(Attack First, Faster Resting)"
 
 def selection_menu(name, art, menu_line, options, type = ""):
     """
