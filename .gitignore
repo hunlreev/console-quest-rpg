@@ -8,10 +8,10 @@ saves/
 *.pkl
 
 # Test files
-/testing/
-/testing/build_testing.py
-/testing/Player.py
-/testing/testing.py
+testing/
+testing/build_testing.py
+testing/Player.py
+testing/testing.py
 
 # C extensions
 *.so
