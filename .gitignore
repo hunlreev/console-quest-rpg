@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*$py.class
+*.pyc
 
 # Extra files
 saves/
@@ -8,6 +8,3 @@ saves/
 
 # Test files
 testing/
-testing/build_testing.py
-testing/Player.py
-testing/testing.py
