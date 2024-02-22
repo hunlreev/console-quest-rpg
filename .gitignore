@@ -5,6 +5,3 @@ __pycache__/
 # Extra files
 saves/
 *.pkl
-
-# Test files
-testing/
