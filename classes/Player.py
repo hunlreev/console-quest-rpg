@@ -1,6 +1,6 @@
 '''
 Class Name: Player.py
-Description: Default Player class of which all other character classes inherit from.
+Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
 Date: 2024-02-22
 '''
@@ -25,6 +25,7 @@ class Player:
         self.experience = 0
         self.next_experience = 100
         self.attribute_points = 0
+        self.location = "Unknown"
         # Stat information
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),

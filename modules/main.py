@@ -12,9 +12,11 @@ from modules.format import menu_line
 
 # Classes
 from classes.Player import Player
+from classes.Enemy import Enemy
 
 # Imports
 import time
+import random
 
 def print_all_stats(player):
     """
@@ -114,6 +116,8 @@ def display_menu(player):
     menu_line()
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
     menu_line()
+    print(f" - Current Location: {player.location}")
+    menu_line()
     update_stat_bars(player)
     menu_line()
     update_exp_bar(player)
@@ -146,6 +150,12 @@ def start_game(player):
     health_loss = 12.5
     added_exp = 95
     
+    # List of locations the player can explore
+    locations = ["Small Town", "Foggy Forest", "Desolate Cave", "Knoll Mountain", "Sandy Beach", "Abandoned Fort", "Sacked Camp"]
+    
+    # Define an encounter rate (e.g., 30% chance of encounter from 0.0 to 1.0)
+    encounter_rate = 1.0
+    
     # Exit to main menu if no player exits yet
     if player is None:
         return
@@ -175,7 +185,27 @@ def start_game(player):
                 return_to_game(user_input)
         # Explore the existing world - Not implemented
         elif user_input == '2':
-            return_to_game(user_input)
+            # Randomly select a location
+            player.location = random.choice(locations)
+            
+            # Randomly select how long to explore
+            exploration_time = random.choice([(1, "for an hour"), (2, "for several hours"), (3, "for a day"), (4, "for a couple days")])
+            menu_line()
+            print(f" - You explore {exploration_time[1]}...")
+            menu_line()
+            time.sleep(exploration_time[0])
+            
+            # Roll a random value to determine if an encounter happens
+            if random.random() < encounter_rate:
+                # Encounter an enemy
+                enemy = Enemy(player.level, 3, player.location)
+                clear_console()
+                menu_line()
+                print(f" ^ You encountered a Level {enemy.level} {enemy.name}!")
+                menu_line()
+                console_input()
+            else:
+                return_to_game(user_input)
         # View all player stats - Not implemented
         elif user_input == '3':
             print_all_stats(player)
