@@ -13,4 +13,5 @@ All versions of Console Quest RPG will be documented here, along with the change
 - Added functionality to see stats at any time during the game
 - Added rest functionality based on Speed and Agility attribute
 - Added level up functionality and updates to all stats to reflect level up
+- (WIP) Added experience bar and adjusted the length of the bars
 - Minor tweaks, changes, and bug fixes (as always)
