@@ -39,11 +39,10 @@ class Player:
         }
         # For testing purposes
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
-        self.base_physical_attack = self.physical_attack
         self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
-        self.critical_hit = self.base_physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
+        self.critical_hit = self.physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
@@ -119,8 +118,8 @@ class Player:
         seconds_to_wait = 50 / self.attributes['Speed']
 
         # Define the maximum recovery based on Agility and Speed
-        max_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.75)
-        min_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.25)
+        max_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.90)
+        min_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.50)
 
         # Generate random recovery amounts for each stat
         recovery_health = random.randint(min_recovery, max_recovery)
@@ -133,28 +132,6 @@ class Player:
         self.stats['Stamina'] = min(self.max_stats['Stamina'], self.stats['Stamina'] + recovery_stamina)
 
         return seconds_to_wait
-    
-    def use_physical(self):
-        """
-            Base attack using stamina
-    
-            Parameters:
-                self (object): Player object
-            
-            Returns:
-                None.
-        """
-
-        if self.stats['Stamina'] >= self.stamina_cost:
-            # Reset damage debuff and lose stamina with each attack
-            self.physical_attack = self.base_physical_attack
-            self.stats['Stamina'] -= self.stamina_cost
-        else:
-            # Deal half as much damage when not enough stamina
-            if self.physical_attack == self.base_physical_attack:
-                self.physical_attack /= 2
-            else:
-                return
         
     def cast_spell(self):
         """

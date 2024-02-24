@@ -65,6 +65,21 @@ def return_to_game(user_input):
 
     return user_input
 
+def update_enemy_health_bar(enemy):
+    """
+    Takes enemy health and builds an updated health bar while in combat
+
+    Parameters:
+        enemy (object): The enemy.
+
+    Returns:
+        None.
+    """
+    
+    health_bar, h_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
+    
+    print(f" -  Enemy Health: {health_bar} " + h_display)
+
 def update_stat_bars(player):
     """
     Takes player stats and builds updated stat bars before printing them out.
@@ -199,11 +214,70 @@ def start_game(player):
             if random.random() < encounter_rate:
                 # Encounter an enemy
                 enemy = Enemy(player.level, 3, player.location)
-                clear_console()
-                menu_line()
-                print(f" ^ You encountered a Level {enemy.level} {enemy.name}!")
-                menu_line()
-                console_input()
+                # Extra message to display additional information when needed
+                message = ""
+                while enemy.stats['Health'] > 0:
+                    clear_console()
+                    menu_line()
+                    print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
+                    menu_line()
+                    update_enemy_health_bar(enemy)
+                    menu_line()
+                    update_stat_bars(player)
+                    menu_line()
+                    if message != "":
+                        print(message)
+                        menu_line()
+                    print(" * What would you like to do?")
+                    menu_line()
+                    print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
+                    menu_line()
+                    user_input = console_input()
+                    # Player attacks the enemy
+                    if user_input == '1':
+                        # Player deals damage and loses stamina if enough stamina is available
+                        if player.stats['Stamina'] >= player.stamina_cost:
+                            message = ""
+                            crit_threshold = round(random.random(), 2)
+                            # Roll to see if Player will land a critical hit
+                            if crit_threshold < player.critical_chance:
+                                message = " - You landed a critical hit, dealing massive damage!"
+                                enemy.stats['Health'] -= player.critical_hit
+                                player.stats['Stamina'] -= player.stamina_cost
+                            else:
+                                message = ""
+                                enemy.stats['Health'] -= player.physical_attack
+                                player.stats['Stamina'] -= player.stamina_cost
+                        else:
+                            # Player only deals half as much damage
+                            message = " - Not enough stamina! Dealing half as much damage."
+                            enemy.stats['Health'] -= player.physical_attack / 2
+                    # Player cast a spell on the enemy
+                    elif user_input == '2':
+                        # Player casts a spell and deals magic damage if enough mana is available
+                        if player.stats['Mana'] >= player.mana_cost:
+                            message = ""
+                            enemy.stats['Health'] -= player.magical_attack
+                            player.stats['Mana'] -= player.mana_cost
+                        else:
+                            # Not enough mana!
+                            message = " - Not enough mana! You can't cast a spell right now!"
+                    # Player attempts to run away from the enemy
+                    elif user_input == '3':
+                        if player.attributes['Speed'] > enemy.attributes['Speed']:
+                            message = ""
+                            break
+                        else:
+                            # Not fast enough!
+                            message = " - Oh no, you are too slow! You cannot run from this enemy."
+                    # Continue the encounter...
+                    else:
+                        user_input = ''
+                # Add experience to the player after winning
+                player.experience += enemy.dropped_exp
+                # Level up if necessary
+                if player.experience >= player.next_experience:
+                    player.level_up()
             else:
                 return_to_game(user_input)
         # View all player stats - Not implemented
