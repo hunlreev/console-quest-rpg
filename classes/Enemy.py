@@ -14,14 +14,15 @@ class Enemy:
         self.name = self.generate_enemy_name(player_location)
         self.level = self.generate_enemy_level(player_level, threshold)
         self.dropped_exp = max(15, round(random.uniform(15, 30) * self.level))
+        self.modifier = random.uniform(1.25, 1.75) + (self.level / 100)
         # Use a dictionary to store random values for attributes
         self.attributes = {
-            'Strength': round(random.uniform(25 + self.level, 45 + self.level), 0),
-            'Endurance': round(random.uniform(25 + self.level, 45 + self.level), 0),
-            'Intelligence': round(random.uniform(25 + self.level, 45 + self.level), 0),
-            'Willpower': round(random.uniform(25 + self.level, 45 + self.level), 0),
-            'Agility': round(random.uniform(25 + self.level, 45 + self.level), 0),
-            'Speed': round(random.uniform(25 + self.level, 45 + self.level), 0)
+            'Strength': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
+            'Endurance': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
+            'Intelligence': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
+            'Willpower': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
+            'Agility': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
+            'Speed': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0)
         }
         # Use a dictionary to store random values for health, mana, and stamina
         self.stats = {
@@ -95,7 +96,7 @@ class Enemy:
                 (int): The stat being calculated.
         """
         
-        return round(self.attributes[attribute] * (multiplier + level * 0.005) - 1, 0)
+        return round(self.attributes[attribute] * (multiplier + level * 0.01) - 1, 0)
 
     def generate_stat_bar(self, current, maximum, length = 40):
         """

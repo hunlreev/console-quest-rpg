@@ -160,16 +160,12 @@ def start_game(player):
     Returns:
         None.
     """
-
-    # Debug - amount of stat points lost each time (for losing stats, updating the bars)
-    health_loss = 12.5
-    added_exp = 95
     
     # List of locations the player can explore
     locations = ["Small Town", "Foggy Forest", "Desolate Cave", "Knoll Mountain", "Sandy Beach", "Abandoned Fort", "Sacked Camp"]
     
     # Define an encounter rate (e.g., 30% chance of encounter from 0.0 to 1.0)
-    encounter_rate = 1.0
+    encounter_rate = 0.67
     
     # Exit to main menu if no player exits yet
     if player is None:
@@ -210,12 +206,14 @@ def start_game(player):
             menu_line()
             time.sleep(exploration_time[0])
             
+            # Extra message to display additional information when needed
+            message = ""
+            
             # Roll a random value to determine if an encounter happens
             if random.random() < encounter_rate:
                 # Encounter an enemy
                 enemy = Enemy(player.level, 3, player.location)
-                # Extra message to display additional information when needed
-                message = ""
+        
                 while enemy.stats['Health'] > 0:
                     clear_console()
                     menu_line()
@@ -235,10 +233,12 @@ def start_game(player):
                     user_input = console_input()
                     # Player attacks the enemy
                     if user_input == '1':
+                        # Thresholds for critical hit and dodging
+                        crit_threshold = round(random.random(), 2)
+                        dodge_threshold = round(random.random(), 2)
                         # Player deals damage and loses stamina if enough stamina is available
                         if player.stats['Stamina'] >= player.stamina_cost:
                             message = ""
-                            crit_threshold = round(random.random(), 2)
                             # Roll to see if Player will land a critical hit
                             if crit_threshold < player.critical_chance:
                                 message = " - You landed a critical hit, dealing massive damage!"
@@ -252,8 +252,16 @@ def start_game(player):
                             # Player only deals half as much damage
                             message = " - Not enough stamina! Dealing half as much damage."
                             enemy.stats['Health'] -= player.physical_attack / 2
+                        if dodge_threshold < player.dodge_chance:
+                            message = f" - You dodged the {enemy.name}'s attack!"
+                        else:
+                            message = f" - The {enemy.name} attacks you!"
+                            player.stats['Health'] -= enemy.physical_attack
                     # Player cast a spell on the enemy
                     elif user_input == '2':
+                        # Thresholds for critical hit and dodging
+                        crit_threshold = round(random.random(), 2)
+                        dodge_threshold = round(random.random(), 2)
                         # Player casts a spell and deals magic damage if enough mana is available
                         if player.stats['Mana'] >= player.mana_cost:
                             message = ""
@@ -262,6 +270,11 @@ def start_game(player):
                         else:
                             # Not enough mana!
                             message = " - Not enough mana! You can't cast a spell right now!"
+                        if dodge_threshold < player.dodge_chance:
+                            message = f" - You dodged the {enemy.name}'s spell!"
+                        else:
+                            message = f" - The {enemy.name} casts a spell at you!"
+                            player.stats['Health'] -= enemy.magical_attack
                     # Player attempts to run away from the enemy
                     elif user_input == '3':
                         if player.attributes['Speed'] > enemy.attributes['Speed']:
