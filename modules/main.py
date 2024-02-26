@@ -306,18 +306,6 @@ def start_game(player):
             print(" - You rest for a little bit...")
             menu_line()
             time.sleep(seconds_to_wait)
-        elif user_input == '5':
-            # Debugging
-            player.lose_stat_points('Health', health_loss)
-        elif user_input == '6':
-            player.cast_spell()
-        elif user_input == '7':
-            player.use_physical()
-        elif user_input == '8':
-            player.add_experience(added_exp)
-            if player.experience >= player.next_experience:
-                menu_line()
-                player.level_up()
         # If not a pre-determined option, return to game (do nothing, essentially)
         else:
             return_to_game(user_input)
