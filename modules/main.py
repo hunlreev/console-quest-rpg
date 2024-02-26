@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-02-22
+Date: 2024-02-26
 '''
 
 # Modules
@@ -17,6 +17,72 @@ from classes.Enemy import Enemy
 # Imports
 import time
 import random
+
+def update_enemy_health_bar(enemy):
+    """
+    Takes enemy health and builds an updated health bar while in combat
+
+    Parameters:
+        enemy (object): The enemy.
+
+    Returns:
+        None.
+    """
+    
+    health_bar, h_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
+    
+    print(f" -  Health: {health_bar} " + h_display)
+
+def update_exp_bar(player):
+    """
+    Takes player experience and displays an experience bar
+
+    Parameters:
+        player (object): The player character.
+
+    Returns:
+        None.
+    """
+    
+    exp_bar, e_display = player.generate_exp_bar(player.experience, player.next_experience)
+
+    print(f" - EXP: {exp_bar} " + e_display)
+
+def update_stat_bars(player):
+    """
+    Takes player stats and builds updated stat bars before printing them out.
+
+    Parameters:
+        player (object): The player character.
+
+    Returns:
+        None.
+    """
+    
+    health_bar, h_display = player.generate_stat_bar(player.stats['Health'], player.max_stats['Health'])
+    mana_bar, m_display = player.generate_stat_bar(player.stats['Mana'], player.max_stats['Mana'])
+    stamina_bar, s_display = player.generate_stat_bar(player.stats['Stamina'], player.max_stats['Stamina'])
+
+    print(f" -  Health: {health_bar} " + h_display)
+    print(f" -    Mana: {mana_bar} " + m_display)
+    print(f" - Stamina: {stamina_bar} " + s_display)
+
+def recover_stats(player):
+    """
+    Handles the resting portion of the game.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    seconds_to_wait = player.rest()
+    menu_line()
+    print(" - You rest for a little bit...")
+    menu_line()
+    time.sleep(seconds_to_wait)
 
 def print_all_stats(player):
     """
@@ -50,6 +116,209 @@ def print_all_stats(player):
     print(f" - Dodge chance: {player.dodge_chance}")
     menu_line()
 
+def run_away(player, enemy):
+    """
+    Handles the running away portion of the encounter.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The enemy in the current encounter.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    # Check if player is fast enough to run away
+    if player.attributes['Speed'] > enemy.attributes['Speed']:
+        return ""
+    else:
+        return " - Oh no, you are too slow! You cannot run from this enemy."
+
+def cast_spell(player, enemy):
+    """
+    Handles the spell casting portion of the encounter.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The enemy in the current encounter.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    crit_threshold = round(random.random(), 2)
+    dodge_threshold = round(random.random(), 2)
+
+    # Check if the player has enough mana first
+    if player.stats['Mana'] >= player.mana_cost:
+        # Check if spell will be a critical hit
+        if crit_threshold < player.critical_chance:
+            enemy.stats['Health'] -= player.critical_hit
+            player.stats['Stamina'] -= player.mana_cost
+            return " - You landed a critical hit, dealing massive damage!"
+        # Regular spell
+        else:
+            enemy.stats['Health'] -= player.magical_attack
+            player.stats['Mana'] -= player.mana_cost
+    # Not enough mana - cannot cast a spell!
+    else:
+        return " - Not enough mana! You can't cast a spell right now!"
+
+    # Check if player will dodge the enemy's attack
+    if dodge_threshold < player.dodge_chance:
+        return f" - You dodged the {enemy.name}'s spell!"
+    # Failed to dodge the enemy's attack!
+    else:
+        player.stats['Health'] -= enemy.magical_attack
+        return f" - The {enemy.name} casts a spell at you!"
+
+def attack(player, enemy):
+    """
+    Handles the attacking portion of the encounter.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The enemy in the current encounter.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    # Values for determining crits and dodging
+    crit_threshold = round(random.random(), 2)
+    dodge_threshold = round(random.random(), 2)
+
+    # Check if player has enough stamina first
+    if player.stats['Stamina'] >= player.stamina_cost:
+        # Check if attack will be a critical hit
+        if crit_threshold < player.critical_chance:
+            enemy.stats['Health'] -= player.critical_hit
+            player.stats['Stamina'] -= player.stamina_cost
+            return " - You landed a critical hit, dealing massive damage!"
+        # Regular attack
+        else:
+            enemy.stats['Health'] -= player.physical_attack
+            player.stats['Stamina'] -= player.stamina_cost
+    # Not enough stamina, cut amount of damage dealt in half
+    else:
+        enemy.stats['Health'] -= player.physical_attack / 2
+        return " - Not enough stamina! Dealing half as much damage."
+
+    # Check if player will dodge the enemy's attack
+    if dodge_threshold < player.dodge_chance:
+        return f" - You dodged the {enemy.name}'s attack!"
+    # Failed to dodge the enemy's attack!
+    else:
+        player.stats['Health'] -= enemy.physical_attack
+        return f" - The {enemy.name} attacks you!"
+
+def player_input(player, enemy, user_input):
+    """
+    Handles the player input for the selection they make.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The enemy in the current encounter.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    message = ""
+
+    if user_input == '1':
+        message = attack(player, enemy)
+    elif user_input == '2':
+        message = cast_spell(player, enemy)
+    elif user_input == '3':
+        message = run_away(player, enemy)
+    
+    return message
+
+def enemy_encounter(player, message):
+    """
+    Handles the enemy encounters when they happen.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        message (str): A message that displays when updated.
+
+    Returns:
+        None.
+    """
+
+    enemy = Enemy(player.level, 3, player.location)
+
+    # Continue the encounter while the player is alive
+    while enemy.stats['Health'] > 0:
+        clear_console()
+        menu_line()
+        print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
+        menu_line()
+        update_enemy_health_bar(enemy)
+        menu_line()
+        update_stat_bars(player)
+        menu_line()
+        
+        # Only print a message in this section if there is something to display
+        if message != "":
+            print(message)
+            menu_line()
+
+        print(" * What would you like to do?")
+        menu_line()
+        print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
+        menu_line()
+        
+        user_input = console_input()
+        message = player_input(player, enemy, user_input)
+
+    # Check if player should get experience
+    if enemy.stats['Health'] <= 0:
+        menu_line()
+        print(f" ^ You defeated the {enemy.name}! You have earned {enemy.dropped_exp} experience.")
+        menu_line()
+        player.experience += enemy.dropped_exp
+        time.sleep(2)
+
+    # Check if player should level up
+    if player.experience >= player.next_experience:
+        player.level_up()
+
+    return_to_game(user_input)
+
+def explore_location(player, locations, encounter_rate):
+    """
+    Allows the player to explore a randomly selected location.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        locations (List): A list of locations for the player to explore.
+        encounter_rate (Float): A value from 0 to 1 that describes the encounter rate.
+
+    Returns:
+        None.
+    """
+    
+    # Randomly selected location
+    player.location = random.choice(locations)
+
+    # Determine how long the exploration will last
+    exploration_time = random.choice([(1, "for an hour"), (2, "for several hours"), (3, "for a day"), (4, "for a couple days")])
+
+    menu_line()
+    print(f" - You explore {exploration_time[1]}...")
+    menu_line()
+    time.sleep(exploration_time[0])
+
+    message = ""
+
+    # Determine if an enemy encounter will happen or not
+    if random.random() < encounter_rate:
+        enemy_encounter(player, message)
+    else:
+        return_to_game("")
+
 def return_to_game(user_input):
     """
     Takes the user back to the main game menu to continue playing.
@@ -64,55 +333,6 @@ def return_to_game(user_input):
     user_input = ''
 
     return user_input
-
-def update_enemy_health_bar(enemy):
-    """
-    Takes enemy health and builds an updated health bar while in combat
-
-    Parameters:
-        enemy (object): The enemy.
-
-    Returns:
-        None.
-    """
-    
-    health_bar, h_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
-    
-    print(f" -  Enemy Health: {health_bar} " + h_display)
-
-def update_stat_bars(player):
-    """
-    Takes player stats and builds updated stat bars before printing them out.
-
-    Parameters:
-        player (object): The player character.
-
-    Returns:
-        None.
-    """
-    
-    health_bar, h_display = player.generate_stat_bar(player.stats['Health'], player.max_stats['Health'])
-    mana_bar, m_display = player.generate_stat_bar(player.stats['Mana'], player.max_stats['Mana'])
-    stamina_bar, s_display = player.generate_stat_bar(player.stats['Stamina'], player.max_stats['Stamina'])
-
-    print(f" -  Health: {health_bar} " + h_display)
-    print(f" -    Mana: {mana_bar} " + m_display)
-    print(f" - Stamina: {stamina_bar} " + s_display)
-    
-def update_exp_bar(player):
-    """
-    Takes player experience and displays an experience bar
-
-    Parameters:
-        player (object): The player character.
-
-    Returns:
-        None.
-    """
-    
-    exp_bar, e_display = player.generate_exp_bar(player.experience, player.next_experience)
-
-    print(f" - EXP: {exp_bar} " + e_display)
 
 def display_menu(player):
     """
@@ -160,153 +380,53 @@ def start_game(player):
     Returns:
         None.
     """
-    
-    # List of locations the player can explore
+
+    # Function to handle selection in the pause menu when it is active
+    def pause_menu_selection():
+        if user_input == '1':
+            return_to_game(user_input)
+        elif user_input == '2':
+            save_game(player)
+        elif user_input == '3':
+            save_game(player)
+            return "Exit"
+        elif user_input == '4':
+            return "Exit"
+        elif user_input == '5':
+            delete_game()
+        else:
+            return_to_game(user_input)
+
+    # List of locations to go to during the game
     locations = ["Small Town", "Foggy Forest", "Desolate Cave", "Knoll Mountain", "Sandy Beach", "Abandoned Fort", "Sacked Camp"]
-    
-    # Define an encounter rate (e.g., 30% chance of encounter from 0.0 to 1.0)
+
+    # Set enemy encounter rate while exploring from 0 to 1
     encounter_rate = 0.67
-    
-    # Exit to main menu if no player exits yet
+
+    # Only continue if a player currently exists by this point
     if player is None:
         return
 
-    # Main game loop
-    while True:
-        # User input to determine what to do next
+    # Main gameplay loop while the player is still alive
+    while player.stats['Health'] > 0:
         user_input = display_menu(player)
 
-        # Pause the game
         if user_input == '1':
             pause_menu()
             user_input = console_input()
-
-            # Menu to continue, save the game, or exit
-            if user_input == '1':
-                return_to_game(user_input)
-            elif user_input == '2':
-                save_game(player)
-                return
-            elif user_input == '3':
-                user_input = delete_game()
-                return_to_game(user_input)
-            elif user_input == '4':
-                return
-            else:
-                return_to_game(user_input)
-        # Explore the existing world - Not implemented
+            exit = pause_menu_selection()
+            # Break out of the loop
+            if exit == "Exit":
+                break
         elif user_input == '2':
-            # Randomly select a location
-            player.location = random.choice(locations)
-            
-            # Randomly select how long to explore
-            exploration_time = random.choice([(1, "for an hour"), (2, "for several hours"), (3, "for a day"), (4, "for a couple days")])
-            menu_line()
-            print(f" - You explore {exploration_time[1]}...")
-            menu_line()
-            time.sleep(exploration_time[0])
-            
-            # Extra message to display additional information when needed
-            message = ""
-            
-            # Roll a random value to determine if an encounter happens
-            if random.random() < encounter_rate:
-                # Encounter an enemy
-                enemy = Enemy(player.level, 3, player.location)
-        
-                while enemy.stats['Health'] > 0:
-                    clear_console()
-                    menu_line()
-                    print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
-                    menu_line()
-                    update_enemy_health_bar(enemy)
-                    menu_line()
-                    update_stat_bars(player)
-                    menu_line()
-                    if message != "":
-                        print(message)
-                        menu_line()
-                    print(" * What would you like to do?")
-                    menu_line()
-                    print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
-                    menu_line()
-                    user_input = console_input()
-                    # Player attacks the enemy
-                    if user_input == '1':
-                        # Thresholds for critical hit and dodging
-                        crit_threshold = round(random.random(), 2)
-                        dodge_threshold = round(random.random(), 2)
-                        # Player deals damage and loses stamina if enough stamina is available
-                        if player.stats['Stamina'] >= player.stamina_cost:
-                            message = ""
-                            # Roll to see if Player will land a critical hit
-                            if crit_threshold < player.critical_chance:
-                                message = " - You landed a critical hit, dealing massive damage!"
-                                enemy.stats['Health'] -= player.critical_hit
-                                player.stats['Stamina'] -= player.stamina_cost
-                            else:
-                                message = ""
-                                enemy.stats['Health'] -= player.physical_attack
-                                player.stats['Stamina'] -= player.stamina_cost
-                        else:
-                            # Player only deals half as much damage
-                            message = " - Not enough stamina! Dealing half as much damage."
-                            enemy.stats['Health'] -= player.physical_attack / 2
-                        if dodge_threshold < player.dodge_chance:
-                            message = f" - You dodged the {enemy.name}'s attack!"
-                        else:
-                            message = f" - The {enemy.name} attacks you!"
-                            player.stats['Health'] -= enemy.physical_attack
-                    # Player cast a spell on the enemy
-                    elif user_input == '2':
-                        # Thresholds for critical hit and dodging
-                        crit_threshold = round(random.random(), 2)
-                        dodge_threshold = round(random.random(), 2)
-                        # Player casts a spell and deals magic damage if enough mana is available
-                        if player.stats['Mana'] >= player.mana_cost:
-                            message = ""
-                            enemy.stats['Health'] -= player.magical_attack
-                            player.stats['Mana'] -= player.mana_cost
-                        else:
-                            # Not enough mana!
-                            message = " - Not enough mana! You can't cast a spell right now!"
-                        if dodge_threshold < player.dodge_chance:
-                            message = f" - You dodged the {enemy.name}'s spell!"
-                        else:
-                            message = f" - The {enemy.name} casts a spell at you!"
-                            player.stats['Health'] -= enemy.magical_attack
-                    # Player attempts to run away from the enemy
-                    elif user_input == '3':
-                        if player.attributes['Speed'] > enemy.attributes['Speed']:
-                            message = ""
-                            break
-                        else:
-                            # Not fast enough!
-                            message = " - Oh no, you are too slow! You cannot run from this enemy."
-                    # Continue the encounter...
-                    else:
-                        user_input = ''
-                # Add experience to the player after winning
-                player.experience += enemy.dropped_exp
-                # Level up if necessary
-                if player.experience >= player.next_experience:
-                    player.level_up()
-            else:
-                return_to_game(user_input)
-        # View all player stats - Not implemented
+            explore_location(player, locations, encounter_rate)
         elif user_input == '3':
             print_all_stats(player)
             print(" * Press enter to return to the game...")
             menu_line()
             console_input()
-        # Rest and restore stats - Not implemented
         elif user_input == '4':
-            seconds_to_wait = player.rest()
-            menu_line()
-            print(" - You rest for a little bit...")
-            menu_line()
-            time.sleep(seconds_to_wait)
-        # If not a pre-determined option, return to game (do nothing, essentially)
+            recover_stats(player)
         else:
             return_to_game(user_input)
     
@@ -329,7 +449,6 @@ def initialize_game():
         menu_line()
         user_input = console_input()
 
-        # Determine the user menu selection
         if user_input == '1':
             # Start a new character for a new game
             name, race, birth_sign, player_class, attributes = new_game()
@@ -341,15 +460,12 @@ def initialize_game():
                 'player_class': player_class,
                 'attributes': attributes
             }
-            # Create a new player and start the game with that player
             player = Player(**player_info)
             start_game(player)
         elif user_input == '2':
-            # Load an existing character from a previously saved game
             player = load_game()
             start_game(player)
         elif user_input == '3':
-            # View information/controls on how to play the game
             about_game()
         elif user_input == '4':
             # Exit the game

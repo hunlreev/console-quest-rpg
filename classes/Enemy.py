@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-02-22
+Date: 2024-02-26
 '''
 
 # Imports
@@ -98,7 +98,7 @@ class Enemy:
         
         return round(self.attributes[attribute] * (multiplier + level * 0.01) - 1, 0)
 
-    def generate_stat_bar(self, current, maximum, length = 40):
+    def generate_stat_bar(self, current, maximum, length = 46):
         """
             Display stats in a bar.
     
