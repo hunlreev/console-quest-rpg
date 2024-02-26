@@ -154,7 +154,7 @@ def cast_spell(player, enemy):
         # Check if spell will be a critical hit
         if crit_threshold < player.critical_chance:
             enemy.stats['Health'] -= player.critical_hit
-            player.stats['Stamina'] -= player.mana_cost
+            player.stats['Mana'] -= player.mana_cost
             return " - You landed a critical hit, dealing massive damage!"
         # Regular spell
         else:
