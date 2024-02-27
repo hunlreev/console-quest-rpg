@@ -2,12 +2,12 @@
 Module Name: game.py
 Description: Core functionality for the main menu and starting the game
 Author: Hunter Reeves
-Date: 2024-02-19
+Date: 2024-02-27
 '''
 
 # Modules
 from modules.core import clear_console
-from modules.console_art import art_main_menu, art_race, art_birthsign, art_class
+from modules.console_art import art_dragon, art_planet, art_stars, art_battleaxe
 from modules.creation import select_race, select_birthsign, select_class
 from modules.menu import menu_line, return_to_menu
 
@@ -30,7 +30,7 @@ def about_game():
     clear_console()
 
     # Start 'About Game' section
-    art_main_menu()
+    art_dragon()
     menu_line()
     print(" ^ About Console Quest RPG")
     menu_line()
@@ -120,7 +120,7 @@ def load_game():
 
     # Start the load menu screen
     clear_console()
-    art_main_menu()
+    art_dragon()
 
     # List all save files in the directory
     save_files = [f for f in os.listdir(saves_directory) if f.endswith('.pkl')]
@@ -195,7 +195,7 @@ def new_game():
     clear_console()
 
     # Start 'New Game' section
-    art_main_menu()
+    art_dragon()
     menu_line()
     print(" ^ New Game")
     menu_line()
@@ -211,13 +211,13 @@ def new_game():
     clear_console()
 
     # Select the character's race (starts the character's attributes off)
-    race, attributes = select_race(name, art_race, menu_line)
+    race, attributes = select_race(name, art_planet, menu_line)
 
     # Select the character's birthsign (affects the attributes)
-    birth_sign, attributes = select_birthsign(name, attributes, art_birthsign, menu_line)
+    birth_sign, attributes = select_birthsign(name, attributes, art_stars, menu_line)
 
     # Select the character's class (affects the attributes)
-    player_class, attributes = select_class(name, attributes, art_class, menu_line)
+    player_class, attributes = select_class(name, attributes, art_battleaxe, menu_line)
 
     # Return all character information to create the Player
     return name, race, birth_sign, player_class, attributes

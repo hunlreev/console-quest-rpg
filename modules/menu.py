@@ -2,13 +2,13 @@
 Module Name: menu.py
 Description: Displays the menu at the start of the game as well as implements all of the options for the user.
 Author: Hunter Reeves
-Date: 2024-02-26
+Date: 2024-02-27
 '''
 
 # Modules
 from modules.core import console_input, clear_console
 from modules.format import menu_line, menu_selection, menu_title
-from modules.console_art import art_main_menu
+from modules.console_art import art_dragon
 
 def return_to_menu():
     """
@@ -65,7 +65,7 @@ def main_menu():
     """
 
     # Display the menu art at the top
-    art_main_menu()
+    art_dragon()
     # Header/TItle
     menu_line()
     menu_title()

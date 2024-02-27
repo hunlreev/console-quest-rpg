@@ -2,7 +2,7 @@
 Module Name: console_art.py
 Description: Contains the strings of ASCII art used in the game.
 Author: Hunter Reeves
-Date: 2024-02-15
+Date: 2024-02-27
 '''
 
 def art_rogue():
@@ -116,9 +116,9 @@ def art_warrior():
 
     print(warrior)
 
-def art_class():
+def art_battleaxe():
     """
-    Prints art for class menu
+    Prints art of a battle axe
 
     Parameters:
         None.
@@ -150,9 +150,9 @@ def art_class():
 
     print(something)
 
-def art_birthsign():
+def art_stars():
     """
-    Prints art for birthsign menu
+    Prints art of stars
 
     Parameters:
         None.
@@ -181,7 +181,7 @@ def art_birthsign():
 
     print(stars)
 
-def art_race():
+def art_planet():
     """
     Prints art for race menu
     
@@ -212,9 +212,9 @@ def art_race():
 
     print(planet)
 
-def art_main_menu():
+def art_dragon():
     """
-    Prints art for main menu
+    Prints art of a dragon
     
     Parameters:
         None.

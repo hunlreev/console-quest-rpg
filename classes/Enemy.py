@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-02-26
+Date: 2024-02-27
 '''
 
 # Imports
@@ -18,12 +18,12 @@ class Enemy:
         self.dropped_gold = round((random.uniform(1, 3) * self.modifier), 0)
         # Use a dictionary to store random values for attributes
         self.attributes = {
-            'Strength': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
-            'Endurance': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
-            'Intelligence': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
-            'Willpower': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
-            'Agility': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),
-            'Speed': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0)
+            'Strength': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
+            'Endurance': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
+            'Intelligence': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
+            'Willpower': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
+            'Agility': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
+            'Speed': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0)
         }
         # Use a dictionary to store random values for health, mana, and stamina
         self.stats = {

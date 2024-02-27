@@ -2,11 +2,11 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-02-26
+Date: 2024-02-27
 '''
 
 # Modules
-from modules.menu import console_input, clear_console, main_menu, pause_menu, return_to_menu
+from modules.menu import console_input, clear_console, main_menu, pause_menu
 from modules.game import about_game, new_game, save_game, load_game, delete_game
 from modules.format import menu_line
 
@@ -149,6 +149,27 @@ def print_all_stats(player):
     print(f" - Dodge chance: {player.dodge_chance}")
     menu_line()
 
+def check_dodge(player, enemy, dodge_threshold):
+    """
+    Handles the dodge logic during an encounter.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The enemy in the current encounter.
+        dodge_threshold (float): Value to check against for dodging
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    # Check if player will dodge the enemy's attack
+    if dodge_threshold < player.dodge_chance:
+        return f" - You dodged the {enemy.name}'s attack!"
+    # Failed to dodge the enemy's attack!
+    else:
+        player.stats['Health'] -= enemy.physical_attack
+        return f" - The {enemy.name} attacks you!"
+
 def run_away(player, enemy):
     """
     Handles the running away portion of the encounter.
@@ -194,18 +215,11 @@ def cast_spell(player, enemy):
         else:
             enemy.stats['Health'] -= player.magical_attack
             player.stats['Mana'] -= player.mana_cost
+            return check_dodge(player, enemy, dodge_threshold)
     # Not enough mana - cannot cast a spell!
     else:
         player.stats['Health'] -= enemy.magical_attack
-        return " - Not enough mana! You can't cast a spell right now!"
-
-    # Check if player will dodge the enemy's attack
-    if dodge_threshold < player.dodge_chance:
-        return f" - You dodged the {enemy.name}'s spell!"
-    # Failed to dodge the enemy's attack!
-    else:
-        player.stats['Health'] -= enemy.magical_attack
-        return f" - The {enemy.name} casts a spell at you!"
+        return check_dodge(player, enemy, dodge_threshold)
 
 def attack(player, enemy):
     """
@@ -218,15 +232,6 @@ def attack(player, enemy):
     Returns:
         message (str): A dynamic message for displaying additional information
     """
-    
-    def check_dodge():
-        # Check if player will dodge the enemy's attack
-        if dodge_threshold < player.dodge_chance:
-            return f" - You dodged the {enemy.name}'s attack!"
-        # Failed to dodge the enemy's attack!
-        else:
-            player.stats['Health'] -= enemy.physical_attack
-            return f" - The {enemy.name} attacks you!"
 
     # Values for determining crits and dodging
     crit_threshold = round(random.random(), 2)
@@ -243,11 +248,11 @@ def attack(player, enemy):
         else:
             enemy.stats['Health'] -= player.physical_attack
             player.stats['Stamina'] -= player.stamina_cost
-            return check_dodge()
+            return check_dodge(player, enemy, dodge_threshold)
     # Not enough stamina, cut amount of damage dealt in half
     else:
         enemy.stats['Health'] -= player.physical_attack / 2
-        return check_dodge()
+        return check_dodge(player, enemy, dodge_threshold)
 
 def player_input(player, enemy, user_input):
     """
@@ -365,10 +370,10 @@ def explore_location(player, locations, encounter_rate):
     player.location = random.choice(locations)
 
     # Determine how long the exploration will last
-    exploration_time = random.choice([(1, "for an hour"), (2, "for several hours"), (3, "for a day"), (4, "for a couple days")])
+    exploration_time = random.choice([(1, "a quick adventure"), (2, "a short, nearby exploration"), (3, "a long journey"), (4, "huge campaign and get lost")])
 
     menu_line()
-    print(f" - You explore {exploration_time[1]}...")
+    print(f" - You set out for {exploration_time[1]}...")
     menu_line()
     time.sleep(exploration_time[0])
 
