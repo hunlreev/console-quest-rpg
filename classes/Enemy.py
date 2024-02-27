@@ -13,8 +13,9 @@ class Enemy:
         # Information about an enemy
         self.name = self.generate_enemy_name(player_location)
         self.level = self.generate_enemy_level(player_level, threshold)
-        self.dropped_exp = max(15, round(random.uniform(15, 30) * self.level))
-        self.modifier = random.uniform(1.25, 1.75) + (self.level / 100)
+        self.modifier = random.uniform(1.50, 1.75) + (self.level / 25)
+        self.dropped_exp = round((random.uniform(25, 35) * self.modifier), 0)
+        self.dropped_gold = round((random.uniform(1, 3) * self.modifier), 0)
         # Use a dictionary to store random values for attributes
         self.attributes = {
             'Strength': round(random.uniform(25 + self.level, 45 + self.level) * self.modifier, 0),

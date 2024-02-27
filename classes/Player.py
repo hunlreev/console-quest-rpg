@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-02-22
+Date: 2024-02-26
 '''
 
 # Modules
@@ -25,6 +25,7 @@ class Player:
         self.experience = 0
         self.next_experience = 100
         self.attribute_points = 0
+        self.gold = 0
         self.location = "Unknown"
         # Stat information
         self.stats = {
@@ -115,7 +116,7 @@ class Player:
         """
 
         # How fast you recover based on Speed
-        seconds_to_wait = 50 / self.attributes['Speed']
+        seconds_to_wait = 100 / self.attributes['Speed']
 
         # Define the maximum recovery based on Agility and Speed
         max_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.90)
@@ -194,12 +195,12 @@ class Player:
             menu_line()
             print(f" - Attribute Points Remaining: {self.attribute_points}")
             menu_line()
-            print(" 1. Strength")
-            print(" 2. Endurance")
-            print(" 3. Intelligence")
-            print(" 4. Willpower")
-            print(" 5. Agility")
-            print(" 6. Speed")
+            print(" 1. Strength     - (Affects Max Stamina, Physical Damage")
+            print(" 2. Endurance    - (Affects Max Health, Physical Defense)")
+            print(" 3. Intelligence - (Affects Max Mana, Magical Damage)")
+            print(" 4. Willpower    - (Spell Effectiveness, Magical Defense)")
+            print(" 5. Agility      - (Dodge Chance, Critical Hit)")
+            print(" 6. Speed        - (Run Away, Faster Resting)")
             menu_line()
             print(" * Enter the number of the attribute to increase (0 to finish): ")
             menu_line()

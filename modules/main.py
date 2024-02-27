@@ -6,7 +6,7 @@ Date: 2024-02-26
 '''
 
 # Modules
-from modules.menu import console_input, clear_console, main_menu, pause_menu
+from modules.menu import console_input, clear_console, main_menu, pause_menu, return_to_menu
 from modules.game import about_game, new_game, save_game, load_game, delete_game
 from modules.format import menu_line
 
@@ -75,12 +75,43 @@ def recover_stats(player):
         player (Player): The character save file that the user goes through the game with.
 
     Returns:
-        message (str): A dynamic message for displaying additional information
+        None.
     """
 
+    # Do some calculations...
     seconds_to_wait = player.rest()
     menu_line()
-    print(" - You rest for a little bit...")
+    
+    # Players current speed stat
+    speed = player.attributes['Speed']
+    
+    # Print a dynamic message based on how fast the player is when resting
+    if speed < 10:
+        print(" - Resting proves challenging as you struggle to find comfort...")
+    elif 10 <= speed < 20:
+        print(" - You attempt to rest, but it's a bit of a struggle...")
+    elif 20 <= speed < 30:
+        print(" - You're not the fastest, but you manage to rest...")
+    elif 30 <= speed < 40:
+        print(" - You relax for a bit, and take your time to recover...")
+    elif 40 <= speed < 50:
+        print(" - A brief rest leaves you feeling much better than before...")
+    elif 50 <= speed < 60:
+        print(" - You rest for a short while and feel rejuvenated...")
+    elif 60 <= speed < 70:
+        print(" - You recover efficiently for a while during your rest...")
+    elif 70 <= speed < 80:
+        print(" - You efficiently rest and recover quickly...")
+    elif 80 <= speed < 90:
+        print(" - Your efficient rest results in near-instant recovery...")
+    elif 90 <= speed < 100:
+        print(" - You rejoice at the opportunity to restore yourself!")
+    elif speed == 100:
+        print(" - You recover your health instantly!")
+    else:
+        print(" - You take some time to rest and recuperate...")
+
+    # Wait based on how fast the player is
     menu_line()
     time.sleep(seconds_to_wait)
 
@@ -108,10 +139,12 @@ def print_all_stats(player):
     print(f" - Agility: {player.attributes['Agility']}")
     print(f" - Speed: {player.attributes['Speed']}")
     menu_line()
+    # Debug - not for final viewing
     print(f" - Physical attack: {player.physical_attack}")
     print(f" - Magical attack: {player.magical_attack}")
     print(f" - Critcal attack: {player.critical_hit}")
     menu_line()
+    # Debug - not for final viewing
     print(f" - Critcal chance: {player.critical_chance}")
     print(f" - Dodge chance: {player.dodge_chance}")
     menu_line()
@@ -130,9 +163,10 @@ def run_away(player, enemy):
 
     # Check if player is fast enough to run away
     if player.attributes['Speed'] > enemy.attributes['Speed']:
-        return ""
+        return "Run away!"
     else:
-        return " - Oh no, you are too slow! You cannot run from this enemy."
+        player.stats['Health'] -= enemy.physical_attack
+        return f" - Oh no, you are too slow! You cannot run from this {enemy.name}."
 
 def cast_spell(player, enemy):
     """
@@ -162,6 +196,7 @@ def cast_spell(player, enemy):
             player.stats['Mana'] -= player.mana_cost
     # Not enough mana - cannot cast a spell!
     else:
+        player.stats['Health'] -= enemy.magical_attack
         return " - Not enough mana! You can't cast a spell right now!"
 
     # Check if player will dodge the enemy's attack
@@ -183,6 +218,15 @@ def attack(player, enemy):
     Returns:
         message (str): A dynamic message for displaying additional information
     """
+    
+    def check_dodge():
+        # Check if player will dodge the enemy's attack
+        if dodge_threshold < player.dodge_chance:
+            return f" - You dodged the {enemy.name}'s attack!"
+        # Failed to dodge the enemy's attack!
+        else:
+            player.stats['Health'] -= enemy.physical_attack
+            return f" - The {enemy.name} attacks you!"
 
     # Values for determining crits and dodging
     crit_threshold = round(random.random(), 2)
@@ -199,18 +243,11 @@ def attack(player, enemy):
         else:
             enemy.stats['Health'] -= player.physical_attack
             player.stats['Stamina'] -= player.stamina_cost
+            return check_dodge()
     # Not enough stamina, cut amount of damage dealt in half
     else:
         enemy.stats['Health'] -= player.physical_attack / 2
-        return " - Not enough stamina! Dealing half as much damage."
-
-    # Check if player will dodge the enemy's attack
-    if dodge_threshold < player.dodge_chance:
-        return f" - You dodged the {enemy.name}'s attack!"
-    # Failed to dodge the enemy's attack!
-    else:
-        player.stats['Health'] -= enemy.physical_attack
-        return f" - The {enemy.name} attacks you!"
+        return check_dodge()
 
 def player_input(player, enemy, user_input):
     """
@@ -250,7 +287,7 @@ def enemy_encounter(player, message):
     enemy = Enemy(player.level, 3, player.location)
 
     # Continue the encounter while the player is alive
-    while enemy.stats['Health'] > 0:
+    while player.stats['Health'] > 0:
         clear_console()
         menu_line()
         print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
@@ -272,18 +309,42 @@ def enemy_encounter(player, message):
         
         user_input = console_input()
         message = player_input(player, enemy, user_input)
+        
+        # Determine if user runs away from the encounter
+        if message == "Run away!":
+            clear_console()
+            menu_line()
+            print(f" ^ You managed to run away from the {enemy.name}!")
+            menu_line()
+            time.sleep(2.5)
+            break
+        
+        # Check if the player died
+        if player.stats['Health'] <= 0:
+            clear_console()
+            menu_line()
+            print(f" ^ The {enemy.name} killed you! Please reload your last saved game.")
+            menu_line()
+            time.sleep(3)
+            break
 
-    # Check if player should get experience
-    if enemy.stats['Health'] <= 0:
-        menu_line()
-        print(f" ^ You defeated the {enemy.name}! You have earned {enemy.dropped_exp} experience.")
-        menu_line()
-        player.experience += enemy.dropped_exp
-        time.sleep(2)
-
-    # Check if player should level up
-    if player.experience >= player.next_experience:
-        player.level_up()
+        # Check if player should get experience
+        if enemy.stats['Health'] <= 0:
+            clear_console()
+            menu_line()
+            print(f" ^ You defeated the Level {enemy.level} {enemy.name}!")
+            menu_line()
+            print(f" - You have earned {enemy.dropped_exp} experience.")
+            print(f" - You looted {enemy.dropped_gold} gold.")
+            menu_line()
+            player.experience += enemy.dropped_exp
+            player.gold += enemy.dropped_gold
+            time.sleep(3)
+            # Check if player should level up
+            if player.experience >= player.next_experience:
+                clear_console()
+                player.level_up()
+            break
 
     return_to_game(user_input)
 
@@ -350,6 +411,8 @@ def display_menu(player):
     print(f" ^ Welcome {player.name} the {player.race}!")
     menu_line()
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
+    menu_line()
+    print(f" - Gold: {player.gold}")
     menu_line()
     print(f" - Current Location: {player.location}")
     menu_line()
@@ -419,6 +482,7 @@ def start_game(player):
             if exit == "Exit":
                 break
         elif user_input == '2':
+            clear_console()
             explore_location(player, locations, encounter_rate)
         elif user_input == '3':
             print_all_stats(player)
@@ -426,6 +490,7 @@ def start_game(player):
             menu_line()
             console_input()
         elif user_input == '4':
+            clear_console()
             recover_stats(player)
         else:
             return_to_game(user_input)
