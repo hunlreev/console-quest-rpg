@@ -2,7 +2,7 @@
 Module Name: game.py
 Description: Core functionality for the main menu and starting the game
 Author: Hunter Reeves
-Date: 2024-02-27
+Date: 2024-02-28
 '''
 
 # Modules
@@ -57,6 +57,8 @@ def delete_game():
     """
 
     clear_console()
+
+    art_dragon()
 
     saves_directory = "saves"  # Change this to your actual saves directory
 

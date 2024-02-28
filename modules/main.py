@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-02-27
+Date: 2024-02-28
 '''
 
 # Modules
@@ -193,7 +193,6 @@ def run_away(player, enemy):
     if player.attributes['Speed'] > enemy.attributes['Speed']:
         return "Run away!"
     else:
-        player.stats['Health'] -= enemy.physical_attack
         return f" - Oh no, you are too slow! You cannot run from this {enemy.type}."
 
 def cast_spell(player, enemy):
@@ -209,7 +208,6 @@ def cast_spell(player, enemy):
     """
 
     crit_threshold = round(random.random(), 2)
-    dodge_threshold = round(random.random(), 2)
 
     # Check if the player has enough mana first
     if player.stats['Mana'] >= player.mana_cost:
@@ -222,11 +220,10 @@ def cast_spell(player, enemy):
         else:
             enemy.stats['Health'] -= player.magical_attack - enemy.magical_defense
             player.stats['Mana'] -= player.mana_cost
-            return check_dodge(player, enemy, dodge_threshold)
+            return f" - You successfully casted a spell at the {enemy.type}!"
     # Not enough mana - cannot cast a spell!
     else:
-        player.stats['Health'] -= enemy.magical_attack - enemy.magical_defense
-        return check_dodge(player, enemy, dodge_threshold)
+        return " - You don't have enough mana to cast a spell right now!"
 
 def attack(player, enemy):
     """
@@ -234,7 +231,7 @@ def attack(player, enemy):
 
     Parameters:
         player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The enemy in the current encounter.
+        enemy (Enemy): The current enemy in the encounter.
 
     Returns:
         message (str): A dynamic message for displaying additional information
@@ -242,7 +239,6 @@ def attack(player, enemy):
 
     # Values for determining crits and dodging
     crit_threshold = round(random.random(), 2)
-    dodge_threshold = round(random.random(), 2)
 
     # Check if player has enough stamina first
     if player.stats['Stamina'] >= player.stamina_cost:
@@ -255,11 +251,11 @@ def attack(player, enemy):
         else:
             enemy.stats['Health'] -= player.physical_attack - enemy.physical_defense
             player.stats['Stamina'] -= player.stamina_cost
-            return check_dodge(player, enemy, dodge_threshold)
+            return f" - You successfully attacked the {enemy.type}!"
     # Not enough stamina, cut amount of damage dealt in half
     else:
         enemy.stats['Health'] -= player.physical_attack / 2
-        return check_dodge(player, enemy, dodge_threshold)
+        return " - You don't have enough stamina! Dealing half as much damage."
 
 def player_input(player, enemy, user_input):
     """
@@ -267,7 +263,8 @@ def player_input(player, enemy, user_input):
 
     Parameters:
         player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The enemy in the current encounter.
+        enemy (Enemy): The current enemy in the encounter.
+        user_input (string): Option the player selected in the previous menu.
 
     Returns:
         message (str): A dynamic message for displaying additional information
@@ -317,9 +314,9 @@ def enemy_encounter(player, message):
         print(f" ^ You encountered a Level {enemy.level} {enemy.type} at {player.location}!")
         menu_line()
         # Debug - not for final viewing
-        print(f" - Physical defense: {enemy.physical_defense}")
-        print(f" - Magical defense: {enemy.magical_defense}")
-        menu_line()
+        # print(f" - Physical defense: {enemy.physical_defense}")
+        # print(f" - Magical defense: {enemy.magical_defense}")
+        # menu_line()
         update_enemy_health_bar(enemy)
         menu_line()
         update_stat_bars(player)
@@ -334,9 +331,15 @@ def enemy_encounter(player, message):
         menu_line()
         print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
         menu_line()
-        
         user_input = console_input()
+
+        # Check speed stat to determine who attacks first? YES.
+        # Player attack handled here
         message = player_input(player, enemy, user_input)
+        # Code for enemy attacks go here (randomize attack, physical or magical - account for enemy dodge/crit)
+        # message = enemy_output(enemy, player) ? or something like that...
+        # Handle dodging of player through enemy_output instead of when player attacks...
+        # specific message output for player first and then wait, then display messages for enemy? hmm...
         
         # Determine if user runs away from the encounter
         if message == "Run away!":
@@ -443,7 +446,7 @@ def display_menu(player):
     menu_line()
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
     menu_line()
-    print(f" - Gold: {player.gold}")
+    print(f" - Gold: {int(player.gold)}")
     menu_line()
     print(f" - Current Location: {player.location}")
     menu_line()
