@@ -13,17 +13,17 @@ class Enemy:
         # Information about an enemy
         self.name = self.generate_enemy_name(player_location)
         self.level = self.generate_enemy_level(player_level, threshold)
-        self.modifier = random.uniform(1.50, 1.75) + (self.level / 25)
-        self.dropped_exp = round((random.uniform(25, 35) * self.modifier), 0)
-        self.dropped_gold = round((random.uniform(1, 3) * self.modifier), 0)
+        self.modifier = random.uniform(1.30, 1.50) + (self.level / 25)
+        self.dropped_exp = round((random.uniform(30, 50) * self.modifier), 0)
+        self.dropped_gold = round((random.uniform(3, 5) * self.modifier), 0)
         # Use a dictionary to store random values for attributes
         self.attributes = {
-            'Strength': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
-            'Endurance': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
-            'Intelligence': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
-            'Willpower': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
-            'Agility': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0),
-            'Speed': round(random.uniform(20 + self.level, 40 + self.level) * self.modifier, 0)
+            'Strength': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
+            'Endurance': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
+            'Intelligence': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
+            'Willpower': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
+            'Agility': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
+            'Speed': min(round(random.uniform(20, 40) * self.modifier, 0), 100)
         }
         # Use a dictionary to store random values for health, mana, and stamina
         self.stats = {
@@ -36,12 +36,13 @@ class Enemy:
             'Mana': self.stats['Mana'],
             'Stamina': self.stats['Stamina']
         }
-        # For testing purposes
+        # Fighting statistics
+        self.defense_modifier = 100
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
-        self.critical_hit = self.physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
+        self.physical_defense = round(((self.attributes['Endurance'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
+        self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
-        self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
     def generate_enemy_name(self, current_location):
         """

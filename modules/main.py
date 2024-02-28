@@ -8,6 +8,7 @@ Date: 2024-02-27
 # Modules
 from modules.menu import console_input, clear_console, main_menu, pause_menu
 from modules.game import about_game, new_game, save_game, load_game, delete_game
+from modules.console_art import art_planet, art_stars, art_battleaxe, art_skull
 from modules.format import menu_line
 
 # Classes
@@ -17,6 +18,7 @@ from classes.Enemy import Enemy
 # Imports
 import time
 import random
+import sys
 
 def update_enemy_health_bar(enemy):
     """
@@ -127,6 +129,7 @@ def print_all_stats(player):
     """
 
     clear_console()
+    art_stars()
     menu_line()
     print(f" ^ {player.name}'s Stats")
     menu_line()
@@ -143,6 +146,10 @@ def print_all_stats(player):
     print(f" - Physical attack: {player.physical_attack}")
     print(f" - Magical attack: {player.magical_attack}")
     print(f" - Critcal attack: {player.critical_hit}")
+    menu_line()
+    # Debug - not for final viewing
+    print(f" - Physical defense: {player.physical_defense}")
+    print(f" - Magical defense: {player.magical_defense}")
     menu_line()
     # Debug - not for final viewing
     print(f" - Critcal chance: {player.critical_chance}")
@@ -167,7 +174,7 @@ def check_dodge(player, enemy, dodge_threshold):
         return f" - You dodged the {enemy.name}'s attack!"
     # Failed to dodge the enemy's attack!
     else:
-        player.stats['Health'] -= enemy.physical_attack
+        player.stats['Health'] -= enemy.physical_attack - player.physical_defense
         return f" - The {enemy.name} attacks you!"
 
 def run_away(player, enemy):
@@ -213,12 +220,12 @@ def cast_spell(player, enemy):
             return " - You landed a critical hit, dealing massive damage!"
         # Regular spell
         else:
-            enemy.stats['Health'] -= player.magical_attack
+            enemy.stats['Health'] -= player.magical_attack - enemy.magical_defense
             player.stats['Mana'] -= player.mana_cost
             return check_dodge(player, enemy, dodge_threshold)
     # Not enough mana - cannot cast a spell!
     else:
-        player.stats['Health'] -= enemy.magical_attack
+        player.stats['Health'] -= enemy.magical_attack - enemy.magical_defense
         return check_dodge(player, enemy, dodge_threshold)
 
 def attack(player, enemy):
@@ -239,14 +246,14 @@ def attack(player, enemy):
 
     # Check if player has enough stamina first
     if player.stats['Stamina'] >= player.stamina_cost:
-        # Check if attack will be a critical hit
+        # Check if attack will be a critical hit (crits ignore defense stats)
         if crit_threshold < player.critical_chance:
             enemy.stats['Health'] -= player.critical_hit
             player.stats['Stamina'] -= player.stamina_cost
             return " - You landed a critical hit, dealing massive damage!"
         # Regular attack
         else:
-            enemy.stats['Health'] -= player.physical_attack
+            enemy.stats['Health'] -= player.physical_attack - enemy.physical_defense
             player.stats['Stamina'] -= player.stamina_cost
             return check_dodge(player, enemy, dodge_threshold)
     # Not enough stamina, cut amount of damage dealt in half
@@ -289,13 +296,29 @@ def enemy_encounter(player, message):
         None.
     """
 
-    enemy = Enemy(player.level, 3, player.location)
+    # Function to handle death cooldown timer
+    def return_to_main_menu_countdown(seconds):
+        # Iterate through the number of seconds for the timer
+        for i in range(seconds, 0, -1):
+            sys.stdout.write(f"\r ^ Returning to main menu in: {i}")
+            sys.stdout.flush()
+            time.sleep(1)
+        # Final message
+        sys.stdout.write("\r ^ Returning to main menu in: 0\n")
+        sys.stdout.flush()
+
+    enemy = Enemy(player.level, 2, player.location)
 
     # Continue the encounter while the player is alive
     while player.stats['Health'] > 0:
         clear_console()
+        art_battleaxe()
         menu_line()
         print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
+        menu_line()
+        # Debug - not for final viewing
+        print(f" - Physical defense: {enemy.physical_defense}")
+        print(f" - Magical defense: {enemy.magical_defense}")
         menu_line()
         update_enemy_health_bar(enemy)
         menu_line()
@@ -318,26 +341,29 @@ def enemy_encounter(player, message):
         # Determine if user runs away from the encounter
         if message == "Run away!":
             clear_console()
+            art_planet()
             menu_line()
             print(f" ^ You managed to run away from the {enemy.name}!")
             menu_line()
-            time.sleep(2.5)
+            time.sleep(3)
             break
         
         # Check if the player died
         if player.stats['Health'] <= 0:
             clear_console()
+            art_skull()
             menu_line()
             print(f" ^ The {enemy.name} killed you! Please reload your last saved game.")
             menu_line()
-            time.sleep(3)
+            return_to_main_menu_countdown(5)
             break
 
         # Check if player should get experience
         if enemy.stats['Health'] <= 0:
             clear_console()
+            art_stars()
             menu_line()
-            print(f" ^ You defeated the Level {enemy.level} {enemy.name}!")
+            print(f" ^ You defeated the {enemy.name}!")
             menu_line()
             print(f" - You have earned {enemy.dropped_exp} experience.")
             print(f" - You looted {enemy.dropped_gold} gold.")
@@ -488,6 +514,7 @@ def start_game(player):
                 break
         elif user_input == '2':
             clear_console()
+            art_planet()
             explore_location(player, locations, encounter_rate)
         elif user_input == '3':
             print_all_stats(player)
@@ -496,6 +523,7 @@ def start_game(player):
             console_input()
         elif user_input == '4':
             clear_console()
+            art_stars()
             recover_stats(player)
         else:
             return_to_game(user_input)

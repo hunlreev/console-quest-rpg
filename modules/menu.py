@@ -41,6 +41,7 @@ def pause_menu():
     clear_console()
 
     # Pause menu
+    art_dragon()
     menu_line()
     print(" ^ Game Paused")
     menu_line()
