@@ -10,21 +10,17 @@ import random
 
 class Enemy:
     def __init__(self, player_level, threshold, player_location):
-        # Information about an enemy
-        self.name = self.generate_enemy_name(player_location)
+        # Information about an 
+        self.types = ["Mercenary", "Imp", "Ogre", "Goblin", "Giant Crab", "Skeleton", "Bandit"]
+        self.type = self.generate_enemy_type(player_location)
         self.level = self.generate_enemy_level(player_level, threshold)
-        self.modifier = random.uniform(1.30, 1.50) + (self.level / 25)
-        self.dropped_exp = round((random.uniform(30, 50) * self.modifier), 0)
-        self.dropped_gold = round((random.uniform(3, 5) * self.modifier), 0)
-        # Use a dictionary to store random values for attributes
-        self.attributes = {
-            'Strength': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
-            'Endurance': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
-            'Intelligence': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
-            'Willpower': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
-            'Agility': min(round(random.uniform(20, 40) * self.modifier, 0), 100),
-            'Speed': min(round(random.uniform(20, 40) * self.modifier, 0), 100)
-        }
+        self.attribute_modifier = random.uniform(1.05, 1.10) + (self.level / 30)
+        self.exp_modifier = random.uniform(1.30, 1.50) + (self.level / 4)
+        self.gold_modifier = random.uniform(1.25, 1.75) + (self.level / 5)
+        self.dropped_exp = round((random.uniform(30, 50) * self.exp_modifier), 0)
+        self.dropped_gold = round((random.uniform(3, 5) * self.gold_modifier), 0)
+        # Use a dictionary to store generated attributes based on the enemy type
+        self.attributes = self.generate_enemy_attribute(self.type)
         # Use a dictionary to store random values for health, mana, and stamina
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
@@ -44,9 +40,9 @@ class Enemy:
         self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
 
-    def generate_enemy_name(self, current_location):
+    def generate_enemy_type(self, current_location):
         """
-        Generates a unique enemy name based on the player's location.
+        Generates a unique enemy type based on the player's location.
     
         Parameters:
             self (object): The enemy.
@@ -55,17 +51,17 @@ class Enemy:
             (str): The generated enemy name.
         """
         
-        enemy_names = {
-            'Small Town': 'Mercenary',
-            'Foggy Forest': 'Imp',
-            'Desolate Cave': 'Ogre',
-            'Knoll Mountain': 'Goblin',
-            'Sandy Beach': 'Giant Crab',
-            'Abandoned Fort': 'Skeleton',
-            'Sacked Camp': 'Bandit',
+        enemy_type_locations = {
+            'Small Town': self.types[0],
+            'Foggy Forest': self.types[1],
+            'Desolate Cave': self.types[2],
+            'Knoll Mountain': self.types[3],
+            'Sandy Beach': self.types[4],
+            'Abandoned Fort': self.types[5],
+            'Sacked Camp': self.types[6]
         }
 
-        return f"{enemy_names.get(current_location, 'Enemy')}"
+        return f"{enemy_type_locations.get(current_location, 'Enemy')}"
 
     def generate_enemy_level(self, player_level, threshold):
         """
@@ -84,6 +80,42 @@ class Enemy:
             return 1
         else:
             return random.randint(max(1, player_level - threshold), player_level + threshold)
+        
+    def generate_enemy_attribute(self, enemy_type):
+        """
+            Determines the attributes of the enemy based on the type of enemy
+    
+            Parameters:
+                self (object): Enemy object
+            
+            Returns:
+                None.
+        """
+
+        # Dictionary mapping enemy types to attribute multipliers
+        enemy_type_attributes = {
+            self.types[0]: {"Strength": 45, "Endurance": 35, "Intelligence": 45, "Willpower": 35, "Agility": 45, "Speed": 35},
+            self.types[1]: {"Strength": 35, "Endurance": 35, "Intelligence": 45, "Willpower": 45, "Agility": 35, "Speed": 45},
+            self.types[2]: {"Strength": 55, "Endurance": 55, "Intelligence": 30, "Willpower": 30, "Agility": 40, "Speed": 30},
+            self.types[3]: {"Strength": 30, "Endurance": 30, "Intelligence": 55, "Willpower": 55, "Agility": 30, "Speed": 40},
+            self.types[4]: {"Strength": 50, "Endurance": 50, "Intelligence": 30, "Willpower": 30, "Agility": 20, "Speed": 60},
+            self.types[5]: {"Strength": 30, "Endurance": 30, "Intelligence": 50, "Willpower": 50, "Agility": 60, "Speed": 20},
+            self.types[6]: {"Strength": 35, "Endurance": 45, "Intelligence": 35, "Willpower": 45, "Agility": 35, "Speed": 45}
+        }
+
+        # Get the base attributes for the enemy type
+        attributes = enemy_type_attributes.get(enemy_type)
+        # Get a copy of the attributes for modification
+        modified_attributes = attributes
+
+        # Modify each attribute based on the enemys level
+        for attribute, value in attributes.items():
+            # Get the updated attribute
+            modified_attribute = round(value * self.attribute_modifier, 0)
+            # Ensure that the modified value does not exceed 100
+            modified_attributes[attribute] = min(modified_attribute, 100)
+
+        return modified_attributes
 
     def calculate_stat(self, attribute, level, multiplier = 1):
         """

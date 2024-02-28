@@ -89,11 +89,11 @@ def recover_stats(player):
     
     # Print a dynamic message based on how fast the player is when resting
     if speed < 10:
-        print(" - Resting proves challenging as you struggle to find comfort...")
+        print(" - Resting proves to be a challenge as you struggle to find comfort...")
     elif 10 <= speed < 20:
-        print(" - You attempt to rest, but it's a bit of a struggle...")
+        print(" - You try to rest, but it's a bit of a struggle...")
     elif 20 <= speed < 30:
-        print(" - You're not the fastest, but you manage to rest...")
+        print(" - It's not very effective, but you manage to rest anyway...")
     elif 30 <= speed < 40:
         print(" - You relax for a bit, and take your time to recover...")
     elif 40 <= speed < 50:
@@ -101,9 +101,9 @@ def recover_stats(player):
     elif 50 <= speed < 60:
         print(" - You rest for a short while and feel rejuvenated...")
     elif 60 <= speed < 70:
-        print(" - You recover efficiently for a while during your rest...")
+        print(" - You recover in no time and enjoy your rest...")
     elif 70 <= speed < 80:
-        print(" - You efficiently rest and recover quickly...")
+        print(" - You rest and recover quickly, thinking about your progress...")
     elif 80 <= speed < 90:
         print(" - Your efficient rest results in near-instant recovery...")
     elif 90 <= speed < 100:
@@ -171,11 +171,11 @@ def check_dodge(player, enemy, dodge_threshold):
 
     # Check if player will dodge the enemy's attack
     if dodge_threshold < player.dodge_chance:
-        return f" - You dodged the {enemy.name}'s attack!"
+        return f" - You dodged the {enemy.type}'s attack!"
     # Failed to dodge the enemy's attack!
     else:
         player.stats['Health'] -= enemy.physical_attack - player.physical_defense
-        return f" - The {enemy.name} attacks you!"
+        return f" - The {enemy.type} attacks you!"
 
 def run_away(player, enemy):
     """
@@ -194,7 +194,7 @@ def run_away(player, enemy):
         return "Run away!"
     else:
         player.stats['Health'] -= enemy.physical_attack
-        return f" - Oh no, you are too slow! You cannot run from this {enemy.name}."
+        return f" - Oh no, you are too slow! You cannot run from this {enemy.type}."
 
 def cast_spell(player, enemy):
     """
@@ -314,7 +314,7 @@ def enemy_encounter(player, message):
         clear_console()
         art_battleaxe()
         menu_line()
-        print(f" ^ You encountered a Level {enemy.level} {enemy.name} at {player.location}!")
+        print(f" ^ You encountered a Level {enemy.level} {enemy.type} at {player.location}!")
         menu_line()
         # Debug - not for final viewing
         print(f" - Physical defense: {enemy.physical_defense}")
@@ -343,7 +343,7 @@ def enemy_encounter(player, message):
             clear_console()
             art_planet()
             menu_line()
-            print(f" ^ You managed to run away from the {enemy.name}!")
+            print(f" ^ You managed to run away from the {enemy.type}!")
             menu_line()
             time.sleep(3)
             break
@@ -353,7 +353,7 @@ def enemy_encounter(player, message):
             clear_console()
             art_skull()
             menu_line()
-            print(f" ^ The {enemy.name} killed you! Please reload your last saved game.")
+            print(f" ^ The {enemy.type} killed you! Please reload your last saved game.")
             menu_line()
             return_to_main_menu_countdown(5)
             break
@@ -363,7 +363,7 @@ def enemy_encounter(player, message):
             clear_console()
             art_stars()
             menu_line()
-            print(f" ^ You defeated the {enemy.name}!")
+            print(f" ^ You defeated the {enemy.type}!")
             menu_line()
             print(f" - You have earned {enemy.dropped_exp} experience.")
             print(f" - You looted {enemy.dropped_gold} gold.")
