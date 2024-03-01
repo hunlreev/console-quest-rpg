@@ -2,33 +2,28 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-02-28
+Date: 2024-03-01
 '''
 
-# Modules
 from modules.menu import menu_line
 from modules.core import console_input, clear_console
 from modules.console_art import art_stars
 
-# Imports
 import random
 
 class Player:
     def __init__(self, name, race, birth_sign, player_class, attributes):
-        # Information from creation
         self.name = name
         self.race = race
         self.birth_sign = birth_sign
         self.player_class = player_class
         self.attributes = {attr: max(0, min(100, value)) for attr, value in attributes.items()}
-        # Information after creation
         self.level = 1
         self.experience = 0
         self.next_experience = 100
         self.attribute_points = 0
         self.gold = 0
         self.location = "Small Town"
-        # Stat information
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -39,7 +34,6 @@ class Player:
             'Mana': self.stats['Mana'], 
             'Stamina': self.stats['Stamina']
         }
-        # For combat statistics
         self.defense_modifier = 100
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
@@ -119,19 +113,15 @@ class Player:
                 seconds_to_wait (float): How long the player must wait between rests (in seconds)
         """
 
-        # How fast you recover based on Speed
         seconds_to_wait = 100 / self.attributes['Speed']
 
-        # Define the maximum recovery based on Agility and Speed
         max_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.90)
         min_recovery = int(((self.attributes['Agility'] + self.attributes['Speed']) / 2) * 0.50)
 
-        # Generate random recovery amounts for each stat
         recovery_health = random.randint(min_recovery, max_recovery)
         recovery_mana = random.randint(min_recovery, max_recovery)
         recovery_stamina = random.randint(min_recovery, max_recovery)
 
-        # Apply recovery without exceeding max stats
         self.stats['Health'] = min(self.max_stats['Health'], self.stats['Health'] + recovery_health)
         self.stats['Mana'] = min(self.max_stats['Mana'], self.stats['Mana'] + recovery_mana)
         self.stats['Stamina'] = min(self.max_stats['Stamina'], self.stats['Stamina'] + recovery_stamina)
@@ -150,7 +140,6 @@ class Player:
         """
 
         if self.stats['Mana'] >= self.mana_cost:
-            # Lose mana with each spell casted
             self.stats['Mana'] -= self.mana_cost
         else:
             return
@@ -190,7 +179,6 @@ class Player:
 
         clear_console()
 
-        # Gain 11 attribute points on level up
         self.attribute_points += 5
 
         while self.attribute_points > 0:
@@ -215,10 +203,8 @@ class Player:
             if choice == '0':
                 break
             elif choice in ['1', '2', '3', '4', '5', '6']:
-                # Increment the chosen attribute
                 attribute_name = get_attribute_name(int(choice))
 
-                # Check if incrementing the attribute would exceed 100
                 if self.attributes[attribute_name] < 100:
                     self.attributes[attribute_name] += 1
                     self.attribute_points -= 1
@@ -232,12 +218,9 @@ class Player:
             else:
                 return
 
-        # Reset experience and update next experience for the next level
         self.experience = round(self.experience % self.next_experience, 0)
         self.level += 1
         self.next_experience = round(self.next_experience * 1.125, 0)
-
-        # Update stat information to reflect new stats from level up
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -248,7 +231,6 @@ class Player:
             'Mana': self.stats['Mana'], 
             'Stamina': self.stats['Stamina']
         }
-        # Fighting statistics
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
         self.critical_hit = self.physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
@@ -258,23 +240,3 @@ class Player:
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
-
-    # For debugging
-    def lose_stat_points(self, stat, amount = 1):
-        """
-            Adjusts stat based on an amount lost
-
-            Parameters:
-                self (object): Player object
-                stat (string): The stat that is being affected
-                amount (int): The amount of loss to the stat
-            
-            Returns:
-                None.
-        """
-
-        self.stats[stat] = max(0, self.stats[stat] - amount)
-            
-    # For debugging
-    def add_experience(self, amount):
-        self.experience += amount

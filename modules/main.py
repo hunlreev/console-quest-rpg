@@ -2,20 +2,17 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-02-28
+Date: 2024-03-01
 '''
 
-# Modules
 from modules.menu import console_input, clear_console, main_menu, pause_menu
 from modules.game import about_game, new_game, save_game, load_game, delete_game
 from modules.console_art import art_planet, art_stars, art_battleaxe, art_skull
 from modules.format import menu_line
 
-# Classes
 from classes.Player import Player
 from classes.Enemy import Enemy
 
-# Imports
 import time
 import random
 import sys
@@ -80,14 +77,10 @@ def recover_stats(player):
         None.
     """
 
-    # Do some calculations...
     seconds_to_wait = player.rest()
     menu_line()
-    
-    # Players current speed stat
     speed = player.attributes['Speed']
     
-    # Print a dynamic message based on how fast the player is when resting
     if speed < 10:
         print(" - Resting proves to be a challenge as you struggle to find comfort...")
     elif 10 <= speed < 20:
@@ -113,7 +106,6 @@ def recover_stats(player):
     else:
         print(" - You take some time to rest and recuperate...")
 
-    # Wait based on how fast the player is
     menu_line()
     time.sleep(seconds_to_wait)
 
@@ -169,10 +161,8 @@ def check_dodge(player, enemy, dodge_threshold):
         message (str): A dynamic message for displaying additional information
     """
 
-    # Check if player will dodge the enemy's attack
     if dodge_threshold < player.dodge_chance:
         return f" - You dodged the {enemy.type}'s attack!"
-    # Failed to dodge the enemy's attack!
     else:
         player.stats['Health'] -= enemy.physical_attack - player.physical_defense
         return f" - The {enemy.type} attacks you!"
@@ -189,7 +179,6 @@ def run_away(player, enemy):
         message (str): A dynamic message for displaying additional information
     """
 
-    # Check if player is fast enough to run away
     if player.attributes['Speed'] > enemy.attributes['Speed']:
         return "Run away!"
     else:
@@ -209,19 +198,15 @@ def cast_spell(player, enemy):
 
     crit_threshold = round(random.random(), 2)
 
-    # Check if the player has enough mana first
     if player.stats['Mana'] >= player.mana_cost:
-        # Check if spell will be a critical hit
         if crit_threshold < player.critical_chance:
             enemy.stats['Health'] -= player.critical_hit
             player.stats['Mana'] -= player.mana_cost
             return " - You landed a critical hit, dealing massive damage!"
-        # Regular spell
         else:
             enemy.stats['Health'] -= player.magical_attack - enemy.magical_defense
             player.stats['Mana'] -= player.mana_cost
             return f" - You successfully casted a spell at the {enemy.type}!"
-    # Not enough mana - cannot cast a spell!
     else:
         return " - You don't have enough mana to cast a spell right now!"
 
@@ -237,22 +222,17 @@ def attack(player, enemy):
         message (str): A dynamic message for displaying additional information
     """
 
-    # Values for determining crits and dodging
     crit_threshold = round(random.random(), 2)
 
-    # Check if player has enough stamina first
     if player.stats['Stamina'] >= player.stamina_cost:
-        # Check if attack will be a critical hit (crits ignore defense stats)
         if crit_threshold < player.critical_chance:
             enemy.stats['Health'] -= player.critical_hit
             player.stats['Stamina'] -= player.stamina_cost
             return " - You landed a critical hit, dealing massive damage!"
-        # Regular attack
         else:
             enemy.stats['Health'] -= player.physical_attack - enemy.physical_defense
             player.stats['Stamina'] -= player.stamina_cost
             return f" - You successfully attacked the {enemy.type}!"
-    # Not enough stamina, cut amount of damage dealt in half
     else:
         enemy.stats['Health'] -= player.physical_attack / 2
         return " - You don't have enough stamina! Dealing half as much damage."
@@ -293,20 +273,16 @@ def enemy_encounter(player, message):
         None.
     """
 
-    # Function to handle death cooldown timer
     def return_to_main_menu_countdown(seconds):
-        # Iterate through the number of seconds for the timer
         for i in range(seconds, 0, -1):
             sys.stdout.write(f"\r ^ Returning to main menu in: {i}")
             sys.stdout.flush()
             time.sleep(1)
-        # Final message
         sys.stdout.write("\r ^ Returning to main menu in: 0\n")
         sys.stdout.flush()
 
     enemy = Enemy(player.level, 2, player.location)
 
-    # Continue the encounter while the player is alive
     while player.stats['Health'] > 0:
         clear_console()
         art_battleaxe()
@@ -322,7 +298,6 @@ def enemy_encounter(player, message):
         update_stat_bars(player)
         menu_line()
         
-        # Only print a message in this section if there is something to display
         if message != "":
             print(message)
             menu_line()
@@ -341,7 +316,6 @@ def enemy_encounter(player, message):
         # Handle dodging of player through enemy_output instead of when player attacks...
         # specific message output for player first and then wait, then display messages for enemy? hmm...
         
-        # Determine if user runs away from the encounter
         if message == "Run away!":
             clear_console()
             art_planet()
@@ -351,7 +325,6 @@ def enemy_encounter(player, message):
             time.sleep(3)
             break
         
-        # Check if the player died
         if player.stats['Health'] <= 0:
             clear_console()
             art_skull()
@@ -361,7 +334,6 @@ def enemy_encounter(player, message):
             return_to_main_menu_countdown(5)
             break
 
-        # Check if player should get experience
         if enemy.stats['Health'] <= 0:
             clear_console()
             art_stars()
@@ -374,7 +346,7 @@ def enemy_encounter(player, message):
             player.experience += enemy.dropped_exp
             player.gold += enemy.dropped_gold
             time.sleep(3)
-            # Check if player should level up
+
             if player.experience >= player.next_experience:
                 clear_console()
                 player.level_up()
@@ -395,10 +367,8 @@ def explore_location(player, locations, encounter_rate):
         None.
     """
     
-    # Randomly selected location
     player.location = random.choice(locations)
 
-    # Determine how long the exploration will last
     exploration_time = random.choice([(1, "a quick adventure"), (2, "a short, nearby exploration"), (3, "a long journey"), (4, "huge campaign and get lost")])
 
     menu_line()
@@ -408,7 +378,6 @@ def explore_location(player, locations, encounter_rate):
 
     message = ""
 
-    # Determine if an enemy encounter will happen or not
     if random.random() < encounter_rate:
         enemy_encounter(player, message)
     else:
@@ -459,7 +428,6 @@ def display_menu(player):
 
     options = {"Pause Game": 1, "Explore World": 2, "View Stats": 3, "Rest": 4}
 
-    # Display options in the menu
     for option, number in options.items():
         print(f" {number}. {option}")
 
@@ -478,7 +446,6 @@ def start_game(player):
         None.
     """
 
-    # Function to handle selection in the pause menu when it is active
     def pause_menu_selection():
         if user_input == '1':
             return_to_game(user_input)
@@ -494,17 +461,13 @@ def start_game(player):
         else:
             return_to_game(user_input)
 
-    # List of locations to go to during the game
     locations = ["Small Town", "Foggy Forest", "Desolate Cave", "Knoll Mountain", "Sandy Beach", "Abandoned Fort", "Sacked Camp"]
 
-    # Set enemy encounter rate while exploring from 0 to 1
     encounter_rate = 0.67
 
-    # Only continue if a player currently exists by this point
     if player is None:
         return
 
-    # Main gameplay loop while the player is still alive
     while player.stats['Health'] > 0:
         user_input = display_menu(player)
 
@@ -512,7 +475,7 @@ def start_game(player):
             pause_menu()
             user_input = console_input()
             exit = pause_menu_selection()
-            # Break out of the loop
+
             if exit == "Exit":
                 break
         elif user_input == '2':
@@ -543,7 +506,6 @@ def initialize_game():
     """
 
     while True:
-        # Get input from the user to select options from the main menu
         clear_console()
         main_menu()
         print(" * Select an option from the menu above:")
@@ -551,9 +513,8 @@ def initialize_game():
         user_input = console_input()
 
         if user_input == '1':
-            # Start a new character for a new game
             name, race, birth_sign, player_class, attributes = new_game()
-            # Consolidate information
+
             player_info = {
                 'name': name,
                 'race': race,
@@ -569,5 +530,4 @@ def initialize_game():
         elif user_input == '3':
             about_game()
         elif user_input == '4':
-            # Exit the game
             break

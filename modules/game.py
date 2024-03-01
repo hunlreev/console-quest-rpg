@@ -2,16 +2,14 @@
 Module Name: game.py
 Description: Core functionality for the main menu and starting the game
 Author: Hunter Reeves
-Date: 2024-02-28
+Date: 2024-03-01
 '''
 
-# Modules
 from modules.core import clear_console
 from modules.console_art import art_dragon, art_planet, art_stars, art_battleaxe
 from modules.creation import select_race, select_birthsign, select_class
 from modules.menu import menu_line, return_to_menu
 
-# Imports
 import os
 import pickle
 
@@ -26,10 +24,8 @@ def about_game():
         None.
     """
 
-    # Clears existing console
     clear_console()
 
-    # Start 'About Game' section
     art_dragon()
     menu_line()
     print(" ^ About Console Quest RPG")
@@ -62,12 +58,10 @@ def delete_game():
 
     saves_directory = "saves"  # Change this to your actual saves directory
 
-    # Check if saves directory exists
     if not os.path.exists(saves_directory) or not os.path.isdir(saves_directory):
         print("No saved games found.")
         return
 
-    # List available saved games
     saved_games = [file for file in os.listdir(saves_directory) if os.path.isfile(os.path.join(saves_directory, file))]
     
     if not saved_games:
@@ -117,14 +111,11 @@ def load_game():
         None.
     """
 
-    # Directory for all save files
     saves_directory = 'saves\\'
 
-    # Start the load menu screen
     clear_console()
     art_dragon()
 
-    # List all save files in the directory
     save_files = [f for f in os.listdir(saves_directory) if f.endswith('.pkl')]
 
     if not save_files:
@@ -136,18 +127,15 @@ def load_game():
         return_to_menu()
         return None
 
-    # Display the list of save files with index
     menu_line()
     print(" ^ Load Game")
     menu_line()
     print(" * Choose a saved character to load:")
     menu_line()
     for i, save_file in enumerate(save_files, start = 1):
-        # Remove ".pkl" extension when displaying the save file name
-        save_name = os.path.splitext(save_file)[0]
-        print(f" {i}. {save_name}")
+        remove_pkl_from_name = os.path.splitext(save_file)[0]
+        print(f" {i}. {remove_pkl_from_name}")
 
-    # Get user input for the selected save file
     while True:
         try:
             menu_line()
@@ -193,33 +181,24 @@ def new_game():
         None.
     """
 
-    # Clears existing console
     clear_console()
 
-    # Start 'New Game' section
     art_dragon()
     menu_line()
     print(" ^ New Game")
     menu_line()
 
-    # Enter character name
     print(" * Enter thy name:")
     menu_line()
     name = input(" > ")
-    # Default name if none is selected
     if name == "":
         name = 'Player'
-    # Clears existing console
     clear_console()
 
-    # Select the character's race (starts the character's attributes off)
     race, attributes = select_race(name, art_planet, menu_line)
 
-    # Select the character's birthsign (affects the attributes)
     birth_sign, attributes = select_birthsign(name, attributes, art_stars, menu_line)
 
-    # Select the character's class (affects the attributes)
     player_class, attributes = select_class(name, attributes, art_battleaxe, menu_line)
 
-    # Return all character information to create the Player
     return name, race, birth_sign, player_class, attributes

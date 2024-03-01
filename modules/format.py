@@ -2,7 +2,7 @@
 Module Name: format.py
 Description: Contains all the print console formatting functions
 Author: Hunter Reeves
-Date: 2024-02-17
+Date: 2024-03-01
 '''
 
 def menu_line(scalar = 73):
@@ -33,7 +33,7 @@ def menu_title(scalar = 26):
 
     print(" " * scalar + "-- Console Quest RPG --" + " " * scalar)
 
-def menu_selection(scalar = 49, version = "(v0.0.1-pre)"):
+def menu_selection(scalar = 49, version = "(v0.1.0-pre)"):
     """
     Prints the options in the menu for the player to choose from.
     
@@ -45,12 +45,11 @@ def menu_selection(scalar = 49, version = "(v0.0.1-pre)"):
         None.
     """
 
-    # Options for the menu selection
     options = {"New Game": 1, "Load Game": 2, "About Game": 3, "Quit Game": 4}
 
-    # Display options in the menu
     for option, number in options.items():
-        if number == 4:  # Print version information only for "Quit Game"
+        # Print version information only for "Quit Game"
+        if number == 4:
             print(f" {number}. {option}" + " " * scalar + version)
         else:
             print(f" {number}. {option}")

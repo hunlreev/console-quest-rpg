@@ -2,10 +2,9 @@
 Module Name: core.py
 Description: Contains core functions for all modules to use freely.
 Author: Hunter Reeves
-Date: 2024-02-14
+Date: 2024-03-01
 '''
 
-# Imports
 import os
 
 def console_input():

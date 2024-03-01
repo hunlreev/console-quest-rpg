@@ -2,15 +2,13 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-02-28
+Date: 2024-03-01
 '''
 
-# Imports
 import random
 
 class Enemy:
     def __init__(self, player_level, threshold, player_location):
-        # Information about an 
         self.types = ["Mercenary", "Imp", "Ogre", "Goblin", "Giant Crab", "Skeleton", "Bandit"]
         self.type = self.generate_enemy_type(player_location)
         self.level = self.generate_enemy_level(player_level, threshold)
@@ -19,9 +17,7 @@ class Enemy:
         self.gold_modifier = random.uniform(1.25, 1.75) + (self.level / 5)
         self.dropped_exp = round((random.uniform(30, 50) * self.exp_modifier), 0)
         self.dropped_gold = round((random.uniform(3, 5) * self.gold_modifier), 0)
-        # Use a dictionary to store generated attributes based on the enemy type
         self.attributes = self.generate_enemy_attribute(self.type)
-        # Use a dictionary to store random values for health, mana, and stamina
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -32,7 +28,6 @@ class Enemy:
             'Mana': self.stats['Mana'],
             'Stamina': self.stats['Stamina']
         }
-        # Fighting statistics
         self.defense_modifier = 100
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
@@ -92,7 +87,6 @@ class Enemy:
                 None.
         """
 
-        # Dictionary mapping enemy types to attribute multipliers
         enemy_type_attributes = {
             self.types[0]: {"Strength": 45, "Endurance": 35, "Intelligence": 45, "Willpower": 35, "Agility": 45, "Speed": 35},
             self.types[1]: {"Strength": 35, "Endurance": 35, "Intelligence": 45, "Willpower": 45, "Agility": 35, "Speed": 45},
@@ -103,16 +97,11 @@ class Enemy:
             self.types[6]: {"Strength": 35, "Endurance": 45, "Intelligence": 35, "Willpower": 45, "Agility": 35, "Speed": 45}
         }
 
-        # Get the base attributes for the enemy type
         attributes = enemy_type_attributes.get(enemy_type)
-        # Get a copy of the attributes for modification
         modified_attributes = attributes
 
-        # Modify each attribute based on the enemys level
         for attribute, value in attributes.items():
-            # Get the updated attribute
             modified_attribute = round(value * self.attribute_modifier, 0)
-            # Ensure that the modified value does not exceed 100
             modified_attributes[attribute] = min(modified_attribute, 100)
 
         return modified_attributes
