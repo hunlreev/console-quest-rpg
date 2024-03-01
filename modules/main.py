@@ -210,32 +210,34 @@ def cast_spell(player, enemy):
     else:
         return " - You don't have enough mana to cast a spell right now!"
 
-def attack(player, enemy):
+def attack(attacker, defender):
     """
     Handles the attacking portion of the encounter.
 
     Parameters:
-        player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The current enemy in the encounter.
+        attacker (Player or Enemy): The character or enemy attacking.
+        defender (Player or Enemy): The character or enemy being attacked.
 
     Returns:
-        message (str): A dynamic message for displaying additional information
+        message (str): A dynamic message for displaying additional information.
     """
 
     crit_threshold = round(random.random(), 2)
 
-    if player.stats['Stamina'] >= player.stamina_cost:
-        if crit_threshold < player.critical_chance:
-            enemy.stats['Health'] -= player.critical_hit
-            player.stats['Stamina'] -= player.stamina_cost
-            return " - You landed a critical hit, dealing massive damage!"
+    if attacker.stats['Stamina'] >= attacker.stamina_cost:
+        if crit_threshold < attacker.critical_chance:
+            defender.stats['Health'] -= attacker.critical_hit
+            attacker.stats['Stamina'] -= attacker.stamina_cost
+            return f" - {attacker.description} landed a critical hit, dealing massive damage!"
         else:
-            enemy.stats['Health'] -= player.physical_attack - enemy.physical_defense
-            player.stats['Stamina'] -= player.stamina_cost
-            return f" - You successfully attacked the {enemy.type}!"
+            damage = max(0, attacker.physical_attack - defender.physical_defense)
+            defender.stats['Health'] -= damage
+            attacker.stats['Stamina'] -= attacker.stamina_cost
+            return f" - {attacker.description} successfully attacked the {defender.description}!"
     else:
-        enemy.stats['Health'] -= player.physical_attack / 2
-        return " - You don't have enough stamina! Dealing half as much damage."
+        damage = max(0, attacker.physical_attack / 2 - defender.physical_defense)
+        defender.stats['Health'] -= damage
+        return f" - {attacker.description} doesn't have enough stamina! Dealing half as much damage."
 
 def player_input(player, enemy, user_input):
     """

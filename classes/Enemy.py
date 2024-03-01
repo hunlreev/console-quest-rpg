@@ -18,6 +18,7 @@ class Enemy:
         self.dropped_exp = round((random.uniform(30, 50) * self.exp_modifier), 0)
         self.dropped_gold = round((random.uniform(3, 5) * self.gold_modifier), 0)
         self.attributes = self.generate_enemy_attribute(self.type)
+        self.description = self.type
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -31,9 +32,13 @@ class Enemy:
         self.defense_modifier = 100
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
+        self.critical_hit = self.physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
         self.physical_defense = round(((self.attributes['Endurance'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
         self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
+        self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
+        self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
+        self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
     def generate_enemy_type(self, current_location):
         """

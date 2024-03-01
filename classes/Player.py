@@ -24,6 +24,7 @@ class Player:
         self.attribute_points = 0
         self.gold = 0
         self.location = "Small Town"
+        self.description = self.name
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -127,22 +128,6 @@ class Player:
         self.stats['Stamina'] = min(self.max_stats['Stamina'], self.stats['Stamina'] + recovery_stamina)
 
         return seconds_to_wait
-        
-    def cast_spell(self):
-        """
-            Cast a spell using mana
-    
-            Parameters:
-                self (object): Player object
-            
-            Returns:
-                None.
-        """
-
-        if self.stats['Mana'] >= self.mana_cost:
-            self.stats['Mana'] -= self.mana_cost
-        else:
-            return
     
     def level_up(self):
         """
