@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-03-01
+Date: 2024-03-02
 '''
 
 import random
@@ -15,8 +15,8 @@ class Enemy:
         self.attribute_modifier = random.uniform(1.05, 1.10) + (self.level / 30)
         self.exp_modifier = random.uniform(1.30, 1.50) + (self.level / 4)
         self.gold_modifier = random.uniform(1.25, 1.75) + (self.level / 5)
-        self.dropped_exp = round((random.uniform(30, 50) * self.exp_modifier), 0)
-        self.dropped_gold = round((random.uniform(3, 5) * self.gold_modifier), 0)
+        self.dropped_exp = round((random.uniform(15, 30) * self.exp_modifier), 0)
+        self.dropped_gold = round((random.uniform(2, 4) * self.gold_modifier), 0)
         self.attributes = self.generate_enemy_attribute(self.type)
         self.description = self.type
         self.stats = {
@@ -124,7 +124,7 @@ class Enemy:
                 (int): The stat being calculated.
         """
         
-        return round(self.attributes[attribute] * (multiplier + level * 0.01) - 1, 0)
+        return round(self.attributes[attribute] * (multiplier + level * 0.02) - 1, 0)
 
     def generate_stat_bar(self, current, maximum, length = 46):
         """

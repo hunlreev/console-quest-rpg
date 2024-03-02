@@ -2,7 +2,7 @@
 Module Name: console_art.py
 Description: Contains the strings of ASCII art used in the game.
 Author: Hunter Reeves
-Date: 2024-02-28
+Date: 2024-03-02
 '''
 
 def art_skull():
@@ -200,20 +200,20 @@ def art_stars():
     """
 
     stars = """
- o              .        .                .          .           o       .                     
+ o              .        .                .          .           o     .                     
        .           |   .       o      .         .         o
-   *          o   -O-                   .               .      *       .    
-                   |  .         .              .                          .
+   *          o   -O-                   .               .      *      .    
+                   |  .         .              .                        .
   .       .            *             o           |     *        .     * 
      *                                          -O-       . 
-                   o      |     *                |            o        .
-            *            -O-          .    *                              .
+                   o      |     *                |            o       .
+            *            -O-          .    *                            .
    .    o                 |                               .         .
                 .              .             o    *    .
     |                   *                  .                       o
-   -O-        .          .         .               .      .              |
-    |    .          o             .              o               .      -O-
-  .          *                o           .             .   *            |
+   -O-        .          .         .               .      .            |
+    |    .          o             .              o               .    -O-
+  .          *                o           .             .   *          |
                  .        ,            ,                o         .              
 """
 

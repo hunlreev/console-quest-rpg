@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-03-01
+Date: 2024-03-02
 '''
 
 from modules.menu import menu_line
@@ -12,8 +12,9 @@ from modules.console_art import art_stars
 import random
 
 class Player:
-    def __init__(self, name, race, birth_sign, player_class, attributes):
+    def __init__(self, name, sex, race, birth_sign, player_class, attributes):
         self.name = name
+        self.sex = sex
         self.race = race
         self.birth_sign = birth_sign
         self.player_class = player_class
@@ -24,7 +25,7 @@ class Player:
         self.attribute_points = 0
         self.gold = 0
         self.location = "Small Town"
-        self.description = self.name
+        self.description = self.player_class
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),

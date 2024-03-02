@@ -2,7 +2,7 @@
 Module Name: game.py
 Description: Core functionality for the main menu and starting the game
 Author: Hunter Reeves
-Date: 2024-03-01
+Date: 2024-03-02
 '''
 
 from modules.core import clear_console
@@ -187,12 +187,28 @@ def new_game():
     menu_line()
     print(" ^ New Game")
     menu_line()
-
     print(" * Enter thy name:")
     menu_line()
     name = input(" > ")
     if name == "":
         name = 'Player'
+    clear_console()
+
+    art_dragon()
+    menu_line()
+    print(" ^ New Game")
+    menu_line()
+    print(f" * {name}... what is your sex?")
+    menu_line()
+    print(" 1. Male\n 2. Female")
+    menu_line()
+    sex = input(" > ")
+    if sex == '1':
+        sex = 'Male'
+    elif sex == '2':
+        sex = 'Female'
+    else:
+        sex = 'Unknown'
     clear_console()
 
     race, attributes = select_race(name, art_planet, menu_line)
@@ -201,4 +217,4 @@ def new_game():
 
     player_class, attributes = select_class(name, attributes, art_battleaxe, menu_line)
 
-    return name, race, birth_sign, player_class, attributes
+    return name, sex, race, birth_sign, player_class, attributes

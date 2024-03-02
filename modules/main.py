@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-03-01
+Date: 2024-03-02
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
@@ -134,81 +134,81 @@ def print_all_stats(player):
     print(f" - Agility: {player.attributes['Agility']}")
     print(f" - Speed: {player.attributes['Speed']}")
     menu_line()
-    # Debug - not for final viewing
     print(f" - Physical attack: {player.physical_attack}")
     print(f" - Magical attack: {player.magical_attack}")
-    print(f" - Critcal attack: {player.critical_hit}")
+    print(f" - Critical attack: {player.critical_hit}")
     menu_line()
-    # Debug - not for final viewing
     print(f" - Physical defense: {player.physical_defense}")
     print(f" - Magical defense: {player.magical_defense}")
     menu_line()
-    # Debug - not for final viewing
-    print(f" - Critcal chance: {player.critical_chance}")
+    print(f" - Critical chance: {player.critical_chance}")
     print(f" - Dodge chance: {player.dodge_chance}")
     menu_line()
 
-def check_dodge(player, enemy, dodge_threshold):
+def check_dodge(attacker, defender, dodge_threshold):
     """
     Handles the dodge logic during an encounter.
 
     Parameters:
-        player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The enemy in the current encounter.
-        dodge_threshold (float): Value to check against for dodging
+        attacker (Player or Enemy): The character or enemy attacking.
+        defender (Player or Enemy): The character or enemy being attacked.
+        dodge_threshold (float): To check if a dodge is executed or not.
 
     Returns:
-        message (str): A dynamic message for displaying additional information
+        bool (bool): Check if dodge happened or not.
     """
 
-    if dodge_threshold < player.dodge_chance:
-        return f" - You dodged the {enemy.type}'s attack!"
+    if dodge_threshold < attacker.dodge_chance:
+        return True
     else:
-        player.stats['Health'] -= enemy.physical_attack - player.physical_defense
-        return f" - The {enemy.type} attacks you!"
+        return False
 
-def run_away(player, enemy):
+def run_away(attacker, defender):
     """
     Handles the running away portion of the encounter.
 
     Parameters:
-        player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The enemy in the current encounter.
+        attacker (Player or Enemy): The character or enemy attacking.
+        defender (Player or Enemy): The character or enemy being attacked.
 
     Returns:
         message (str): A dynamic message for displaying additional information
     """
 
-    if player.attributes['Speed'] > enemy.attributes['Speed']:
+    if attacker.attributes['Speed'] > defender.attributes['Speed']:
         return "Run away!"
     else:
-        return f" - Oh no, you are too slow! You cannot run from this {enemy.type}."
+        return f" - Oh no, you are too slow! You cannot run from this {defender.description}."
 
-def cast_spell(player, enemy):
+def cast_spell(attacker, defender):
     """
     Handles the spell casting portion of the encounter.
 
     Parameters:
-        player (Player): The character save file that the user goes through the game with.
-        enemy (Enemy): The enemy in the current encounter.
+        attacker (Player or Enemy): The character or enemy attacking.
+        defender (Player or Enemy): The character or enemy being attacked.
 
     Returns:
         message (str): A dynamic message for displaying additional information
     """
 
     crit_threshold = round(random.random(), 2)
+    dodge_threshold = round(random.random(), 2)
 
-    if player.stats['Mana'] >= player.mana_cost:
-        if crit_threshold < player.critical_chance:
-            enemy.stats['Health'] -= player.critical_hit
-            player.stats['Mana'] -= player.mana_cost
-            return " - You landed a critical hit, dealing massive damage!"
-        else:
-            enemy.stats['Health'] -= player.magical_attack - enemy.magical_defense
-            player.stats['Mana'] -= player.mana_cost
-            return f" - You successfully casted a spell at the {enemy.type}!"
-    else:
-        return " - You don't have enough mana to cast a spell right now!"
+    if attacker.stats['Mana'] < attacker.mana_cost:
+        return f" - {attacker.description} doesn't have enough mana to cast a spell right now!"
+
+    if crit_threshold < attacker.critical_chance:
+        defender.stats['Health'] -= attacker.critical_hit
+        attacker.stats['Mana'] -= attacker.mana_cost
+        return f" - {attacker.description} landed a critical hit, dealing massive damage!"
+
+    if check_dodge(attacker, defender, dodge_threshold):
+        return f" - {defender.description} dodged the {attacker.description}'s spell!"
+
+    defender.stats['Health'] -= max(0, attacker.magical_attack - defender.magical_defense)
+    attacker.stats['Mana'] -= attacker.mana_cost
+    return f" - {attacker.description} successfully casted a spell at the {defender.description}!"
 
 def attack(attacker, defender):
     """
@@ -223,25 +223,53 @@ def attack(attacker, defender):
     """
 
     crit_threshold = round(random.random(), 2)
+    dodge_threshold = round(random.random(), 2)
 
-    if attacker.stats['Stamina'] >= attacker.stamina_cost:
-        if crit_threshold < attacker.critical_chance:
-            defender.stats['Health'] -= attacker.critical_hit
-            attacker.stats['Stamina'] -= attacker.stamina_cost
-            return f" - {attacker.description} landed a critical hit, dealing massive damage!"
-        else:
-            damage = max(0, attacker.physical_attack - defender.physical_defense)
-            defender.stats['Health'] -= damage
-            attacker.stats['Stamina'] -= attacker.stamina_cost
-            return f" - {attacker.description} successfully attacked the {defender.description}!"
-    else:
-        damage = max(0, attacker.physical_attack / 2 - defender.physical_defense)
+    if attacker.stats['Stamina'] < attacker.stamina_cost:
+        damage = max(0, attacker.physical_attack * 0.75 - defender.physical_defense)
         defender.stats['Health'] -= damage
-        return f" - {attacker.description} doesn't have enough stamina! Dealing half as much damage."
+        return f" - {attacker.description} doesn't have enough stamina and isn't as effective!"
 
-def player_input(player, enemy, user_input):
+    if crit_threshold < attacker.critical_chance:
+        defender.stats['Health'] -= attacker.critical_hit
+        attacker.stats['Stamina'] -= attacker.stamina_cost
+        return f" - {attacker.description} landed a critical hit, dealing massive damage!"
+
+    if check_dodge(attacker, defender, dodge_threshold):
+        return f" - {defender.description} dodged the {attacker.description}'s attack!"
+
+    damage = max(0, attacker.physical_attack - defender.physical_defense)
+    defender.stats['Health'] -= damage
+    attacker.stats['Stamina'] -= attacker.stamina_cost
+    return f" - {attacker.description} successfully attacked the {defender.description}!"
+    
+def enemy_decision(enemy, player):
     """
-    Handles the player input for the selection they make.
+    Handle the enemy section of combat.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+        enemy (Enemy): The current enemy in the encounter.
+        user_input (string): Option the player selected in the previous menu.
+
+    Returns:
+        message (str): A dynamic message for displaying additional information
+    """
+
+    message = ""
+    options = ['1', '2']
+    random_selection = random.choice(options)
+
+    if random_selection == options[0]:
+        message = attack(enemy, player)
+    elif random_selection == options[1]:
+        message = cast_spell(enemy, player)
+    
+    return message
+
+def player_decision(player, enemy, user_input):
+    """
+    Handles the player section of combat.
 
     Parameters:
         player (Player): The character save file that the user goes through the game with.
@@ -282,8 +310,14 @@ def enemy_encounter(player, message):
             time.sleep(1)
         sys.stdout.write("\r ^ Returning to main menu in: 0\n")
         sys.stdout.flush()
-
+        
     enemy = Enemy(player.level, 2, player.location)
+    turn_counter = 1
+    
+    if player.attributes['Speed'] >= enemy.attributes['Speed']:
+        isPlayerTurn = True
+    else:
+        isPlayerTurn = False
 
     while player.stats['Health'] > 0:
         clear_console()
@@ -291,10 +325,6 @@ def enemy_encounter(player, message):
         menu_line()
         print(f" ^ You encountered a Level {enemy.level} {enemy.type} at {player.location}!")
         menu_line()
-        # Debug - not for final viewing
-        # print(f" - Physical defense: {enemy.physical_defense}")
-        # print(f" - Magical defense: {enemy.magical_defense}")
-        # menu_line()
         update_enemy_health_bar(enemy)
         menu_line()
         update_stat_bars(player)
@@ -303,20 +333,23 @@ def enemy_encounter(player, message):
         if message != "":
             print(message)
             menu_line()
+            
+        if turn_counter % 2 == 1 and isPlayerTurn:
+            isPlayerTurn = False
+            print(" * What would you like to do?")
+            menu_line()
+            print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
+            menu_line()
+            user_input = console_input()
+            message = player_decision(player, enemy, user_input)
+        elif turn_counter % 2 == 0 and not isPlayerTurn:
+            isPlayerTurn = True
+            print(f" * {enemy.type} is making a decision...")
+            menu_line()
+            time.sleep(4)
+            message = enemy_decision(enemy, player)
 
-        print(" * What would you like to do?")
-        menu_line()
-        print(" 1. Attack\n 2. Cast Spell\n 3. Run Away")
-        menu_line()
-        user_input = console_input()
-
-        # Check speed stat to determine who attacks first? YES.
-        # Player attack handled here
-        message = player_input(player, enemy, user_input)
-        # Code for enemy attacks go here (randomize attack, physical or magical - account for enemy dodge/crit)
-        # message = enemy_output(enemy, player) ? or something like that...
-        # Handle dodging of player through enemy_output instead of when player attacks...
-        # specific message output for player first and then wait, then display messages for enemy? hmm...
+        turn_counter += 1 
         
         if message == "Run away!":
             clear_console()
@@ -324,7 +357,7 @@ def enemy_encounter(player, message):
             menu_line()
             print(f" ^ You managed to run away from the {enemy.type}!")
             menu_line()
-            time.sleep(3)
+            time.sleep(4)
             break
         
         if player.stats['Health'] <= 0:
@@ -347,7 +380,7 @@ def enemy_encounter(player, message):
             menu_line()
             player.experience += enemy.dropped_exp
             player.gold += enemy.dropped_gold
-            time.sleep(3)
+            time.sleep(4)
 
             if player.experience >= player.next_experience:
                 clear_console()
@@ -413,7 +446,7 @@ def display_menu(player):
 
     clear_console()
     menu_line()
-    print(f" ^ Welcome {player.name} the {player.race}!")
+    print(f" ^ Welcome {player.name} the {player.sex} {player.race}!")
     menu_line()
     print(f" - You are a Level {player.level} {player.player_class}, born under {player.birth_sign} sign.")
     menu_line()
@@ -515,10 +548,11 @@ def initialize_game():
         user_input = console_input()
 
         if user_input == '1':
-            name, race, birth_sign, player_class, attributes = new_game()
+            name, sex, race, birth_sign, player_class, attributes = new_game()
 
             player_info = {
                 'name': name,
+                'sex': sex,
                 'race': race,
                 'birth_sign': birth_sign,
                 'player_class': player_class,
