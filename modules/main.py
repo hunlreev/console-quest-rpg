@@ -42,7 +42,7 @@ def update_exp_bar(player):
         None.
     """
     
-    exp_bar, exp_display = player.generate_exp_bar(player.experience, player.next_experience)
+    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2))
 
     print(f" - EXP: {exp_bar} " + exp_display)
 
@@ -57,9 +57,9 @@ def update_stat_bars(player):
         None.
     """
     
-    health_bar, health_display = player.generate_stat_bar(player.stats['Health'], player.max_stats['Health'])
-    mana_bar, mana_display = player.generate_stat_bar(player.stats['Mana'], player.max_stats['Mana'])
-    stamina_bar, stamina_display = player.generate_stat_bar(player.stats['Stamina'], player.max_stats['Stamina'])
+    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2))
+    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2))
+    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2))
 
     print(f" -  Health: {health_bar} " + health_display)
     print(f" -    Mana: {mana_bar} " + mana_display)
@@ -135,13 +135,12 @@ def print_all_stats(player):
     menu_line()
     print(f" - Physical attack: {player.physical_attack}")
     print(f" - Magical attack: {player.magical_attack}")
-    print(f" - Critical attack: {player.critical_hit}")
     menu_line()
     print(f" - Physical defense: {player.physical_defense}")
     print(f" - Magical defense: {player.magical_defense}")
     menu_line()
-    print(f" - Critical chance: {player.critical_chance}")
-    print(f" - Dodge chance: {player.dodge_chance}")
+    print(f" - Enemies Defeated: {player.total_kills}")
+    print(f" - Number of Deaths: {player.total_deaths}")
     menu_line()
 
 def check_dodge(attacker, defender, dodge_threshold):
@@ -347,7 +346,7 @@ def enemy_encounter(player, message):
             isPlayerTurn = True
             print(f" * {enemy.type} is making a decision...")
             menu_line()
-            time.sleep(4)
+            time.sleep(3)
             message = enemy_decision(enemy, player)
 
         turn_counter += 1 
@@ -358,19 +357,27 @@ def enemy_encounter(player, message):
             menu_line()
             print(f" ^ You managed to run away from the {enemy.type}!")
             menu_line()
-            time.sleep(4)
+            time.sleep(3)
             break
         
         if player.stats['Health'] <= 0:
+            player.total_deaths += 1
+            player.max_stats['Health'] -= 1
+            player.max_stats['Mana'] -= 1
+            player.max_stats['Stamina'] -= 1
+            player.stats['Health'] += round(player.max_stats['Health'] * 0.10, 2)
+            player.experience -= round(player.experience * 0.5, 2)
+            save_game(player)
             clear_console()
             art_skull()
             menu_line()
-            print(f" ^ The {enemy.type} killed you! Please reload your last saved game.")
+            print(f" ^ The {enemy.type} killed you! You have lost some progress as a result.")
             menu_line()
             return_to_main_menu_countdown(5)
             break
 
         if enemy.stats['Health'] <= 0:
+            player.total_kills += 1
             clear_console()
             art_stars()
             menu_line()

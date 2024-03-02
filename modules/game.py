@@ -170,15 +170,15 @@ def save_game(player):
     with open('saves\\' + player.name + '.pkl', 'wb') as file:
         pickle.dump(player, file)
         
-def get_sex():
+def get_sex(name):
     """
     Gets the sex of the player.
     
     Parameters:
-        None.
+        name (string): Name of the player.
     
     Returns:
-        None.
+        sex (string): Sex of the player.
     """
     
     art_dragon()
@@ -197,6 +197,8 @@ def get_sex():
     else:
         sex = 'Unknown'
     clear_console()
+    
+    return sex
         
 def get_name():
     """
@@ -206,7 +208,7 @@ def get_name():
         None.
     
     Returns:
-        None.
+        name (string): Name of the player.
     """
     
     art_dragon()
@@ -219,6 +221,8 @@ def get_name():
     if name == "":
         name = 'Player'
     clear_console()
+    
+    return name
 
 def new_game():
     """
@@ -232,8 +236,10 @@ def new_game():
     """
 
     clear_console()
-    get_name()
-    get_sex()
+    
+    name = get_name()
+    
+    sex = get_sex(name)
 
     race, attributes = select_race(name, art_planet, menu_line)
 

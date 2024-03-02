@@ -26,6 +26,8 @@ class Player:
         self.gold = 0
         self.location = "Small Town"
         self.description = self.player_class
+        self.total_kills = 0
+        self.total_deaths = 0
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
