@@ -56,7 +56,7 @@ def delete_game():
 
     art_dragon()
 
-    saves_directory = "saves"  # Change this to your actual saves directory
+    saves_directory = "saves"
 
     if not os.path.exists(saves_directory) or not os.path.isdir(saves_directory):
         print("No saved games found.")
@@ -169,10 +169,10 @@ def save_game(player):
 
     with open('saves\\' + player.name + '.pkl', 'wb') as file:
         pickle.dump(player, file)
-
-def new_game():
+        
+def get_sex():
     """
-    Creates a new character save file and starts the game.
+    Gets the sex of the player.
     
     Parameters:
         None.
@@ -180,20 +180,7 @@ def new_game():
     Returns:
         None.
     """
-
-    clear_console()
-
-    art_dragon()
-    menu_line()
-    print(" ^ New Game")
-    menu_line()
-    print(" * Enter thy name:")
-    menu_line()
-    name = input(" > ")
-    if name == "":
-        name = 'Player'
-    clear_console()
-
+    
     art_dragon()
     menu_line()
     print(" ^ New Game")
@@ -210,6 +197,43 @@ def new_game():
     else:
         sex = 'Unknown'
     clear_console()
+        
+def get_name():
+    """
+    Gets the name of the player.
+    
+    Parameters:
+        None.
+    
+    Returns:
+        None.
+    """
+    
+    art_dragon()
+    menu_line()
+    print(" ^ New Game")
+    menu_line()
+    print(" * Enter thy name:")
+    menu_line()
+    name = input(" > ")
+    if name == "":
+        name = 'Player'
+    clear_console()
+
+def new_game():
+    """
+    Creates a new character save file and starts the game.
+    
+    Parameters:
+        None.
+    
+    Returns:
+        None.
+    """
+
+    clear_console()
+    get_name()
+    get_sex()
 
     race, attributes = select_race(name, art_planet, menu_line)
 

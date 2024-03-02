@@ -15,7 +15,6 @@ from classes.Enemy import Enemy
 
 import time
 import random
-import sys
 
 def update_enemy_health_bar(enemy):
     """
@@ -28,9 +27,9 @@ def update_enemy_health_bar(enemy):
         None.
     """
     
-    health_bar, h_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
+    health_bar, health_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
     
-    print(f" -  Health: {health_bar} " + h_display)
+    print(f" -  Health: {health_bar} " + health_display)
 
 def update_exp_bar(player):
     """
@@ -43,9 +42,9 @@ def update_exp_bar(player):
         None.
     """
     
-    exp_bar, e_display = player.generate_exp_bar(player.experience, player.next_experience)
+    exp_bar, exp_display = player.generate_exp_bar(player.experience, player.next_experience)
 
-    print(f" - EXP: {exp_bar} " + e_display)
+    print(f" - EXP: {exp_bar} " + exp_display)
 
 def update_stat_bars(player):
     """
@@ -58,13 +57,13 @@ def update_stat_bars(player):
         None.
     """
     
-    health_bar, h_display = player.generate_stat_bar(player.stats['Health'], player.max_stats['Health'])
-    mana_bar, m_display = player.generate_stat_bar(player.stats['Mana'], player.max_stats['Mana'])
-    stamina_bar, s_display = player.generate_stat_bar(player.stats['Stamina'], player.max_stats['Stamina'])
+    health_bar, health_display = player.generate_stat_bar(player.stats['Health'], player.max_stats['Health'])
+    mana_bar, mana_display = player.generate_stat_bar(player.stats['Mana'], player.max_stats['Mana'])
+    stamina_bar, stamina_display = player.generate_stat_bar(player.stats['Stamina'], player.max_stats['Stamina'])
 
-    print(f" -  Health: {health_bar} " + h_display)
-    print(f" -    Mana: {mana_bar} " + m_display)
-    print(f" - Stamina: {stamina_bar} " + s_display)
+    print(f" -  Health: {health_bar} " + health_display)
+    print(f" -    Mana: {mana_bar} " + mana_display)
+    print(f" - Stamina: {stamina_bar} " + stamina_display)
 
 def recover_stats(player):
     """
@@ -304,6 +303,8 @@ def enemy_encounter(player, message):
     """
 
     def return_to_main_menu_countdown(seconds):
+        import sys
+        
         for i in range(seconds, 0, -1):
             sys.stdout.write(f"\r ^ Returning to main menu in: {i}")
             sys.stdout.flush()
