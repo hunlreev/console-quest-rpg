@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-03-02
+Date: 2024-03-03
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
@@ -26,10 +26,10 @@ def update_enemy_health_bar(enemy):
     Returns:
         None.
     """
+
+    health_bar, health_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'], 50, 'red')
     
-    health_bar, health_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'])
-    
-    print(f" -  Health: {health_bar} " + health_display)
+    print(f" -  HP: {health_bar} " + health_display)
 
 def update_exp_bar(player):
     """
@@ -42,7 +42,7 @@ def update_exp_bar(player):
         None.
     """
     
-    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2))
+    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2), 50, 'yellow')
 
     print(f" - EXP: {exp_bar} " + exp_display)
 
@@ -57,13 +57,13 @@ def update_stat_bars(player):
         None.
     """
     
-    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2))
-    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2))
-    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2))
+    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2), 50, 'red')
+    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2), 50, 'blue')
+    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2), 50, 'green')
 
-    print(f" -  Health: {health_bar} " + health_display)
-    print(f" -    Mana: {mana_bar} " + mana_display)
-    print(f" - Stamina: {stamina_bar} " + stamina_display)
+    print(f" -  HP: {health_bar} " + health_display)
+    print(f" -  MP: {mana_bar} " + mana_display)
+    print(f" -  SP: {stamina_bar} " + stamina_display)
 
 def recover_stats(player):
     """
@@ -350,6 +350,18 @@ def enemy_encounter(player, message):
             message = enemy_decision(enemy, player)
 
         turn_counter += 1 
+        
+        mana_recovery = round(player.attributes['Willpower'] * 0.03, 2)
+        stamina_recovery = round(player.attributes['Endurance'] * 0.03, 2)
+        
+        player_mana = player.stats['Mana']
+        player_stamina = player.stats['Stamina']
+        
+        mana_difference = player.max_stats['Mana'] - player.stats['Mana']
+        stamina_difference = player.max_stats['Stamina'] - player.stats['Stamina']
+                
+        player.stats['Mana'] += mana_recovery if player_mana + mana_recovery <= player.max_stats['Mana'] else mana_difference
+        player.stats['Stamina'] += stamina_recovery if player_stamina + stamina_recovery <= player.max_stats['Stamina'] else stamina_difference
         
         if message == "Run away!":
             clear_console()

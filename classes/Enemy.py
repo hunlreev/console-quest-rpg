@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-03-02
+Date: 2024-03-03
 '''
 
 import random
@@ -126,23 +126,25 @@ class Enemy:
         
         return round(self.attributes[attribute] * (multiplier + level * 0.02) - 1, 0)
 
-    def generate_stat_bar(self, current, maximum, length = 46):
-        """
-            Display stats in a bar.
-    
-            Parameters:
-                self (object): Enemy object
-                current (int): Value of the current stat
-                maximum (int): Value of the max stat
-                length (int): Length of the stat bar
-            
-            Returns:
-                stat_bar (str): The stat bar
-                display (str): Stat in parathesis for actual value viewing
-        """
+    def generate_stat_bar(self, current, maximum, length = 50, bar_color = 'white', bracket_color = 'white'):
+            """
+                Display stats in a bar.
+        
+                Parameters:
+                    self (object): Enemy object
+                    current (int): Value of the current stat
+                    maximum (int): Value of the max stat
+                    length (int): Length of the stat bar
+                
+                Returns:
+                    stat_bar (str): The stat bar
+                    display (str): Stat in parathesis for actual value viewing
+            """
 
-        bar_length = int(length * (current / maximum))
-        stat_bar = f"[{'=' * bar_length}{' ' * (length - bar_length)}]"
-        display = f"({current}/{maximum})".rjust(10)
+            bar_length = int(length * (current / maximum))
+            color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bar_color)}m"
+            bracket_color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bracket_color)}m"
+            stat_bar = f"{bracket_color_code}[{color_code}{'=' * bar_length}{' ' * (length - bar_length)}{bracket_color_code}]\033[0m"
+            display = f"({current}/{maximum})".rjust(10)
 
-        return stat_bar, display
+            return stat_bar, display

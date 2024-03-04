@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-03-02
+Date: 2024-03-03
 '''
 
 from modules.menu import menu_line
@@ -64,7 +64,7 @@ class Player:
 
         return round(self.attributes[attribute] * (multiplier + level * 0.025) - 1, 0)
 
-    def generate_stat_bar(self, current, maximum, length = 46):
+    def generate_stat_bar(self, current, maximum, length = 50, bar_color = 'white', bracket_color = 'white'):
         """
             Display stats in a bar.
     
@@ -80,12 +80,14 @@ class Player:
         """
 
         bar_length = int(length * (current / maximum))
-        stat_bar = f"[{'=' * bar_length}{' ' * (length - bar_length)}]"
+        color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bar_color)}m"
+        bracket_color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bracket_color)}m"
+        stat_bar = f"{bracket_color_code}[{color_code}{'=' * bar_length}{' ' * (length - bar_length)}{bracket_color_code}]\033[0m"
         display = f"({current}/{maximum})".rjust(10)
 
         return stat_bar, display
 
-    def generate_exp_bar(self, current, maximum, length = 44):
+    def generate_exp_bar(self, current, maximum, length = 50, bar_color = 'white', bracket_color = 'white'):
         """
             Display experience in a bar.
     
@@ -101,7 +103,9 @@ class Player:
         """
 
         bar_length = int(length * (current / maximum))
-        exp_bar = f"[{'=' * bar_length}{' ' * (length - bar_length)}]"
+        color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bar_color)}m"
+        bracket_color_code = f"\033[1;{30 + list(('black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white')).index(bracket_color)}m"
+        exp_bar = f"{bracket_color_code}[{color_code}{'=' * bar_length}{' ' * (length - bar_length)}{bracket_color_code}]\033[0m"
         display = f"({current}/{maximum})".rjust(5)
 
         return exp_bar, display

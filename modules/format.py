@@ -33,7 +33,7 @@ def menu_title(scalar = 26):
 
     print(" " * scalar + "-- Console Quest RPG --" + " " * scalar)
 
-def menu_selection(scalar = 49, version = "(v0.1.0-pre)"):
+def menu_selection(scalar = 49, version = "(v0.1.1-pre)"):
     """
     Prints the options in the menu for the player to choose from.
     
