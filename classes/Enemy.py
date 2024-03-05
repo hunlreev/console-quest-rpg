@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-03-03
+Date: 2024-03-05
 '''
 
 import random
