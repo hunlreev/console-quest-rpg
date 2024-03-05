@@ -37,7 +37,7 @@ class Enemy:
         self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
         self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
-        self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
+        self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2) - (player_level / 200)
         self.critical_chance = round(self.attributes['Agility'] / 400 + 0.002 * self.level, 2)
 
     def generate_enemy_type(self, current_location):
