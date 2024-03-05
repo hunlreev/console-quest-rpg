@@ -6,7 +6,7 @@ All versions of Console Quest RPG will be documented here, along with the change
 - Added colors to the display bars for each stat
 - Minor tweaks, changes, and bug fixes (as always)
 
-## Version 0.1.1-pre (Date Finished - 03/01/2024)
+## Version 0.1.0-pre (Date Finished - 03/01/2024)
 - Changed display to allow for stat bars for health, mana, and stamina
 - Added functionality to be able to delete existing saves as well
 - Added functionality to see stats at any time during the game
