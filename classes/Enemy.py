@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-03-05
+Date: 2024-03-13
 '''
 
 import random
@@ -17,6 +17,7 @@ class Enemy:
         self.gold_modifier = random.uniform(1.25, 1.75) + (self.level / 5)
         self.dropped_exp = round((random.uniform(15, 30) * self.exp_modifier), 0)
         self.dropped_gold = round((random.uniform(2, 4) * self.gold_modifier), 0)
+        self.dropped_item = self.read_drops_from_file('F:\\Python Development\\Console-Quest-RPG\\config\\drops.txt')
         self.attributes = self.generate_enemy_attribute(self.type)
         self.description = self.type
         self.stats = {
@@ -148,3 +149,27 @@ class Enemy:
             display = f"({current}/{maximum})".rjust(10)
 
             return stat_bar, display
+    
+    def read_drops_from_file(self, filename):
+        drops = {}
+    
+        with open(filename, 'r') as file:
+            for line in file:
+                parts = line.strip().split(',')
+                
+                if len(parts) == 6:
+                    enemy_type = parts[0].strip()
+                    name = parts[1].strip()
+                    min_count = int(parts[2].strip())
+                    max_count = int(parts[3].strip())
+                    min_price = float(parts[4].strip())
+                    max_price = float(parts[5].strip())
+                    
+                    count = random.randint(min_count, max_count)
+                    price = round(random.uniform(min_price, max_price), 0)
+                    
+                    if enemy_type == self.type:
+                        drops[name] = {'type': enemy_type, 'name': name, 'count': count, 'price': price}
+                        return drops
+                    
+            return drops

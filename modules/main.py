@@ -2,12 +2,12 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-03-03
+Date: 2024-03-13
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
 from modules.game import about_game, new_game, save_game, load_game, delete_game
-from modules.console_art import art_planet, art_stars, art_battleaxe, art_skull
+from modules.console_art import art_planet, art_stars, art_battleaxe, art_skull, art_dragon
 from modules.format import menu_line
 
 from classes.Player import Player
@@ -286,6 +286,10 @@ def player_decision(player, enemy, user_input):
         message = cast_spell(player, enemy)
     elif user_input == '3':
         message = run_away(player, enemy)
+    # Debug - for instant killing enemies so I can test my code
+    elif user_input == '4':
+        message = "Debug"
+        enemy.stats['Health'] -= 1000
     
     return message
 
@@ -377,7 +381,8 @@ def enemy_encounter(player, message):
             player.max_stats['Health'] -= 1
             player.max_stats['Mana'] -= 1
             player.max_stats['Stamina'] -= 1
-            player.stats['Health'] += round(player.max_stats['Health'] * 0.10, 2)
+            health_penalty = round(player.max_stats['Health'] * 0.10, 2)
+            player.stats['Health'] = max(health_penalty, 1)
             player.experience -= round(player.experience * 0.5, 2)
             save_game(player)
             clear_console()
@@ -395,8 +400,18 @@ def enemy_encounter(player, message):
             menu_line()
             print(f" ^ You defeated the {enemy.type}!")
             menu_line()
-            print(f" - You have earned {enemy.dropped_exp} experience.")
-            print(f" - You looted {enemy.dropped_gold} gold.")
+            print(f" - You have earned {int(enemy.dropped_exp)} experience.")
+            print(f" - You looted {int(enemy.dropped_gold)} gold.")
+            for item_name, item_info in enemy.dropped_item.items():
+                item_name = item_info['name']
+                item_count = item_info['count']
+                item_price = item_info['price']
+                if item_count > 0:
+                    print(f" - You looted {item_count} {item_name}.")
+                    if item_name in player.inventory:
+                        player.inventory[item_name]['count'] += item_count
+                    else:
+                        player.inventory[item_name] = {'count': item_count, 'price': item_price}
             menu_line()
             player.experience += enemy.dropped_exp
             player.gold += enemy.dropped_gold
@@ -481,7 +496,7 @@ def display_menu(player):
     print(" * What would you like to do?")
     menu_line()
 
-    options = {"Pause Game": 1, "Explore World": 2, "View Stats": 3, "Rest": 4}
+    options = {"Pause Game": 1, "Explore World": 2, "View Stats": 3, "View Inventory": 4, "Rest": 5}
 
     for option, number in options.items():
         print(f" {number}. {option}")
@@ -544,8 +559,32 @@ def start_game(player):
             console_input()
         elif user_input == '4':
             clear_console()
+            art_dragon()
+            menu_line()
+            if not player.inventory:
+                print(" * Your inventory is currently empty.")
+            else:
+                print(f" * {player.name}'s Inventory:")
+                menu_line()
+                for item, details in player.inventory.items():
+                    price_int = int(details['price'])
+                    print(f" - {item} (x{details['count']}) @ {price_int}g each")
+            menu_line()
+            console_input()
+        elif user_input == '5':
+            clear_console()
             art_stars()
             recover_stats(player)
+        # Debug - for testing stuff in the game
+        elif user_input == '6':
+            player.experience += 2500
+            if player.experience >= player.next_experience:
+                clear_console()
+                player.level_up()
+        elif user_input == '7':
+            player.stats['Health'] = player.max_stats['Health']
+            player.stats['Mana'] = player.max_stats['Mana']
+            player.stats['Stamina'] = player.max_stats['Stamina']
         else:
             return_to_game(user_input)
     

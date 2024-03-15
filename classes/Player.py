@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-03-03
+Date: 2024-03-13
 '''
 
 from modules.menu import menu_line
@@ -10,6 +10,7 @@ from modules.core import console_input, clear_console
 from modules.console_art import art_stars
 
 import random
+import time
 
 class Player:
     def __init__(self, name, sex, race, birth_sign, player_class, attributes):
@@ -28,6 +29,7 @@ class Player:
         self.description = self.player_class
         self.total_kills = 0
         self.total_deaths = 0
+        self.inventory = {}
         self.stats = {
             'Health': self.calculate_stat('Endurance', self.level),
             'Mana': self.calculate_stat('Intelligence', self.level),
@@ -42,8 +44,8 @@ class Player:
         self.physical_attack = round(1.0 + 10.5 * (self.attributes['Strength'] / 100) * (1 + 0.07 * self.level), 0)
         self.magical_attack = round(1.0 + 10.5 * (self.attributes['Intelligence'] / 100) * (1 + 0.07 * self.level), 0)
         self.critical_hit = self.physical_attack + round(2.5 * ((self.attributes['Agility'] * 12) / 100) + 0.08 * self.level, 0)
-        self.physical_defense = round(((self.attributes['Endurance'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
-        self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.2 * self.level), 0)
+        self.physical_defense = round(((self.attributes['Endurance'] * 2) / self.defense_modifier) + (0.1 * self.level), 0)
+        self.magical_defense = round(((self.attributes['Willpower'] * 2) / self.defense_modifier) + (0.1 * self.level), 0)
         self.stamina_cost = max(8, round(15 * (1.4 - 0.012 * self.attributes['Endurance'] - 0.0005 * self.level), 0))
         self.mana_cost = max(8, round(30 * (1.4 - 0.012 * self.attributes['Willpower'] - 0.0005 * self.level), 0))
         self.dodge_chance = round(self.attributes['Agility'] / 200 + 0.002 * self.level, 2)
@@ -204,9 +206,11 @@ class Player:
                     print(f" - {attribute_name} increased to {self.attributes[attribute_name]}.")
                     clear_console()
                 else:
-                    clear_console()
                     menu_line()
                     print(f" - {attribute_name} is already been maxed out. Please try again.")
+                    menu_line()
+                    time.sleep(2)
+                    clear_console()
             else:
                 return
 
