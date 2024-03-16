@@ -6,6 +6,9 @@ All versions of Console Quest RPG will be documented here, along with the change
 - Added potential drops from enemies
 - Player can view their inventory
 - Player can obtain drops from enemies
+- Refactored a bit of code
+- Changed an absolute path to a relative path
+- Adjusted how the level cap works
 - Minor tweaks, changes, and bug fixes (as always)
 
 ## Version 0.1.1-pre (Date Finished - 03/03/2024)

@@ -2,7 +2,7 @@
 Class Name: Enemy.py
 Description: Default Enemy class of which all enemies will use.
 Author: Hunter Reeves
-Date: 2024-03-13
+Date: 2024-03-15
 '''
 
 import random
@@ -17,7 +17,7 @@ class Enemy:
         self.gold_modifier = random.uniform(1.25, 1.75) + (self.level / 5)
         self.dropped_exp = round((random.uniform(15, 30) * self.exp_modifier), 0)
         self.dropped_gold = round((random.uniform(2, 4) * self.gold_modifier), 0)
-        self.dropped_item = self.read_drops_from_file('F:\\Python Development\\Console-Quest-RPG\\config\\drops.txt')
+        self.dropped_item = self.read_drops_from_file('.\\config\\drops.txt')
         self.attributes = self.generate_enemy_attribute(self.type)
         self.description = self.type
         self.stats = {

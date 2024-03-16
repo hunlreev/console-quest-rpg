@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-03-13
+Date: 2024-03-15
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
@@ -41,8 +41,10 @@ def update_exp_bar(player):
     Returns:
         None.
     """
+
+    bar_length = 46
     
-    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2), 50, 'yellow')
+    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2), bar_length, 'yellow')
 
     print(f" - EXP: {exp_bar} " + exp_display)
 
@@ -56,10 +58,12 @@ def update_stat_bars(player):
     Returns:
         None.
     """
+
+    bar_length = 50
     
-    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2), 50, 'red')
-    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2), 50, 'blue')
-    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2), 50, 'green')
+    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2), bar_length, 'red')
+    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2), bar_length, 'blue')
+    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2),bar_length, 'green')
 
     print(f" -  HP: {health_bar} " + health_display)
     print(f" -  MP: {mana_bar} " + mana_display)
@@ -314,6 +318,22 @@ def enemy_encounter(player, message):
             time.sleep(1)
         sys.stdout.write("\r ^ Returning to main menu in: 0\n")
         sys.stdout.flush()
+
+    def determine_enemy_drop():
+        for item_name, item_info in enemy.dropped_item.items():
+            item_name = item_info['name']
+            item_count = item_info['count']
+            item_price = item_info['price']
+            
+            if item_count <= 0:
+                continue
+            
+            print(f" - You looted {item_count} {item_name}.")
+            
+            if item_name in player.inventory:
+                player.inventory[item_name]['count'] += item_count
+            else:
+                player.inventory[item_name] = {'count': item_count, 'price': item_price}
         
     enemy = Enemy(player.level, 2, player.location)
     turn_counter = 1
@@ -402,22 +422,15 @@ def enemy_encounter(player, message):
             menu_line()
             print(f" - You have earned {int(enemy.dropped_exp)} experience.")
             print(f" - You looted {int(enemy.dropped_gold)} gold.")
-            for item_name, item_info in enemy.dropped_item.items():
-                item_name = item_info['name']
-                item_count = item_info['count']
-                item_price = item_info['price']
-                if item_count > 0:
-                    print(f" - You looted {item_count} {item_name}.")
-                    if item_name in player.inventory:
-                        player.inventory[item_name]['count'] += item_count
-                    else:
-                        player.inventory[item_name] = {'count': item_count, 'price': item_price}
+            determine_enemy_drop()
             menu_line()
             player.experience += enemy.dropped_exp
             player.gold += enemy.dropped_gold
             time.sleep(4)
+            
+            level_cap = 50
 
-            if player.experience >= player.next_experience:
+            if player.experience >= player.next_experience and player.level < level_cap:
                 clear_console()
                 player.level_up()
             break
@@ -577,6 +590,9 @@ def start_game(player):
             recover_stats(player)
         # Debug - for testing stuff in the game
         elif user_input == '6':
+            if player.level >= 50:
+                player.experience = player.next_experience
+                continue
             player.experience += 2500
             if player.experience >= player.next_experience:
                 clear_console()
