@@ -420,15 +420,17 @@ def enemy_encounter(player, message):
             menu_line()
             print(f" ^ You defeated the {enemy.type}!")
             menu_line()
-            print(f" - You have earned {int(enemy.dropped_exp)} experience.")
+            level_cap = 50
+
+            if player.level < level_cap:
+                print(f" - You have earned {int(enemy.dropped_exp)} experience.")
+                player.experience += enemy.dropped_exp
+                
             print(f" - You looted {int(enemy.dropped_gold)} gold.")
             determine_enemy_drop()
             menu_line()
-            player.experience += enemy.dropped_exp
             player.gold += enemy.dropped_gold
             time.sleep(4)
-            
-            level_cap = 50
 
             if player.experience >= player.next_experience and player.level < level_cap:
                 clear_console()
