@@ -1,0 +1,16 @@
+Leather Strip, 2, 5
+Imp Gall, 1, 2
+Ogre Teeth, 1, 3
+Rusted Metal, 0, 1
+Chitin Claw, 1, 2
+Old Bone, 0, 2
+Faded Cloth, 2, 5
+Weak Health Potion, 2, 4
+Weak Mana Potion, 2, 4
+Weak Stamina Potion, 2, 4
+Health Potion, 4, 6
+Mana Potion, 4, 6
+Stamina Potion, 4, 6
+Strong Health Potion, 7, 10
+Strong Mana Potion, 7, 10
+Strong Stamina Potion, 7, 10

@@ -1,0 +1,9 @@
+Weak Health Potion, 4, 8
+Weak Mana Potion, 4, 8
+Weak Stamina Potion, 4, 8
+Health Potion, 7, 12
+Mana Potion, 7, 12
+Stamina Potion, 7, 12
+Strong Health Potion, 14, 20
+Strong Mana Potion, 14, 20
+Strong Stamina Potion, 14, 20

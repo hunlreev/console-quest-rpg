@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-03-15
+Date: 2024-08-11
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
@@ -15,6 +15,210 @@ from classes.Enemy import Enemy
 
 import time
 import random
+
+def shop_menu(player):
+    """
+    Displays the shop menu where the player can choose to buy items, sell items, or return to the game.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+
+    Returns:
+        None.
+    """
+
+    while True:
+        clear_console()
+        art_planet()
+        menu_line()
+        print(" ^ The Medieval World Shoppe")
+        menu_line()
+        print(" 1. Buy Items")
+        print(" 2. Sell Items")
+        print(" 3. Leave Shop")
+        menu_line()
+
+        print(" * Please select an option from the menu above...")
+        menu_line()
+        choice = console_input()
+
+        if choice == "1":
+            buy_items(player)
+        elif choice == "2":
+            sell_items(player)
+        elif choice == "3":
+            return
+        else:
+            return
+        
+def load_shop_selling_items(file_path='.\\config\\shopSelling.txt'):
+    """
+    Loads items from the shop file, generating a random buy price for each item.
+
+    Parameters:
+        file_path (str): The path to the shop items file.
+
+    Returns:
+        items (list): A list of dictionaries representing items available in the shop.
+    """
+    
+    selling_items = []
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            name, min_price, max_price = line.strip().split(', ')
+            min_price, max_price = int(min_price), int(max_price)
+            buy_price = random.randint(min_price, max_price)
+            selling_items.append({
+                'name': name,
+                'sell_price': buy_price
+            })
+
+    return selling_items
+
+def buy_items(player):
+    """
+    Allows the player to buy items from the shop.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+
+    Returns:
+        None.
+    """
+    
+    shop_selling_items = load_shop_selling_items()
+
+    # Randomly select 5 items from the shop selling items
+    items_to_display = random.sample(shop_selling_items, min(5, len(shop_selling_items)))
+
+    clear_console()
+    art_planet()
+    menu_line()
+    print(" ^ Buy from the Medieval World Shoppe")
+    menu_line()
+
+    # Loop through the selected items 
+    for index, item in enumerate(items_to_display, start=1):
+        print(f" {index}. {item['name']} @ {item['sell_price']}g each")
+
+    menu_line()
+    # Ask the player what item to buy
+    print(f" * Choose an item to buy using the leading number.")
+    menu_line()
+
+    item_choice = console_input()
+
+def load_shop_buying_items(file_path='.\\config\\shopBuying.txt'):
+    """
+    Loads items from the shop file, generating a random sell price for each item.
+
+    Parameters:
+        file_path (str): The path to the shop items file.
+
+    Returns:
+        items (list): A list of dictionaries representing items available in the shop.
+    """
+
+    buying_items = []
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            name, min_price, max_price = line.strip().split(', ')
+            min_price, max_price = int(min_price), int(max_price)
+            sell_price = random.randint(min_price, max_price)
+            buying_items.append({
+                'name': name,
+                'sell_price': sell_price
+            })
+
+    return buying_items
+
+def sell_items(player):
+    """
+    Allows the player to sell items from their inventory.
+
+    Parameters:
+        player (Player): The character save file that the user goes through the game with.
+
+    Returns:
+        None.
+    """
+
+    shop_buying_items = load_shop_buying_items()
+
+    clear_console()
+    art_planet()
+    menu_line()
+    print(" ^ Sell to the Medieval World Shoppe")
+    menu_line()
+    
+    if not player.inventory:
+        print(" - Your inventory is currently empty.")
+        menu_line()
+        print(" * Press enter to return to the shop menu...")
+        menu_line()
+        console_input()
+        return
+
+    # Loop through the inventory items
+    for index, (item_name, details) in enumerate(player.inventory.items(), start=1):
+        item_count = details['count']
+
+        # Find the corresponding shop item to get the sell price
+        shop_item = next((shop_item for shop_item in shop_buying_items if shop_item['name'] == item_name), None)
+        if shop_item:
+            print(f" {index}. {item_name} (x{item_count}) @ {shop_item['sell_price']}g each")
+
+    menu_line()
+    # Ask the player what item to sell
+    print(f" * Choose an item to sell using the leading number.")
+    menu_line()
+
+    item_choice = console_input()
+
+    try:
+        item_choice = int(item_choice) - 1
+        if item_choice < 0 or item_choice >= len(player.inventory):
+            raise ValueError
+    except ValueError:
+        return
+    
+    # Get the selected item
+    selected_item_name = list(player.inventory.keys())[item_choice]
+    selected_item = player.inventory[selected_item_name]
+
+    # Ask the player how many of the item they want to sell
+    max_quantity = selected_item['count']
+    menu_line()
+    print(f" * How many {selected_item_name} do you want to sell? (1-{max_quantity})")
+    menu_line()
+    quantity_choice = console_input()
+
+    try:
+        quantity_choice = int(quantity_choice)
+        if quantity_choice < 1 or quantity_choice > max_quantity:
+            raise ValueError
+    except ValueError:
+        return
+    
+    # Calculate the gold earned from the sale
+    shop_item = next((shop_item for shop_item in shop_buying_items if shop_item['name'] == selected_item_name), None)
+    if shop_item:
+        total_gold = shop_item['sell_price'] * quantity_choice
+        player.gold += total_gold
+        player.inventory[selected_item_name]['count'] -= quantity_choice
+
+        # Remove the item from inventory if count reaches zero
+        if player.inventory[selected_item_name]['count'] <= 0:
+            del player.inventory[selected_item_name]
+
+        menu_line()
+        print(f" - You sold {quantity_choice} {selected_item_name} for {total_gold}g.")
+        menu_line()
+        print(" * Press enter to return to the shop menu...")
+        menu_line()
+        console_input()
 
 def update_enemy_health_bar(enemy):
     """
@@ -511,7 +715,7 @@ def display_menu(player):
     print(" * What would you like to do?")
     menu_line()
 
-    options = {"Pause Game": 1, "Explore World": 2, "View Stats": 3, "View Inventory": 4, "Rest": 5}
+    options = {"Pause Game": 1, "Explore World": 2, "View Stats": 3, "View Inventory": 4, "Visit Shop": 5, "Rest": 6}
 
     for option, number in options.items():
         print(f" {number}. {option}")
@@ -573,25 +777,26 @@ def start_game(player):
             menu_line()
             console_input()
         elif user_input == '4':
+            # Add back view inventory (of course its needed)
             clear_console()
             art_dragon()
             menu_line()
-            if not player.inventory:
-                print(" * Your inventory is currently empty.")
-            else:
-                print(f" * {player.name}'s Inventory:")
-                menu_line()
-                for item, details in player.inventory.items():
-                    price_int = int(details['price'])
-                    print(f" - {item} (x{details['count']}) @ {price_int}g each")
+            print(" ^ Current Inventory")
+            menu_line()
+            print(" - Not yet implemented.")
+            menu_line()
+            print(" * Press enter to return to the game...")
             menu_line()
             console_input()
         elif user_input == '5':
             clear_console()
+            shop_menu(player)
+        elif user_input == '6':
+            clear_console()
             art_stars()
             recover_stats(player)
         # Debug - for testing stuff in the game
-        elif user_input == '6':
+        elif user_input == '7':
             if player.level >= 50:
                 player.experience = player.next_experience
                 continue
@@ -599,7 +804,7 @@ def start_game(player):
             if player.experience >= player.next_experience:
                 clear_console()
                 player.level_up()
-        elif user_input == '7':
+        elif user_input == '8':
             player.stats['Health'] = player.max_stats['Health']
             player.stats['Mana'] = player.max_stats['Mana']
             player.stats['Stamina'] = player.max_stats['Stamina']

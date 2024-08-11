@@ -2,7 +2,7 @@
 Module Name: menu.py
 Description: Displays the menu at the start of the game as well as implements all of the options for the user.
 Author: Hunter Reeves
-Date: 2024-03-02
+Date: 2024-08-11
 '''
 
 from modules.core import console_input, clear_console
@@ -46,6 +46,8 @@ def pause_menu():
     for option, number in options.items():
         print(f" {number}. {option}")
 
+    menu_line()
+    print(" * Press enter to return to the game...")
     menu_line()
 
 def main_menu():
