@@ -97,6 +97,8 @@ def buy_items(player):
     menu_line()
     print(" ^ Buy from the Medieval World Shoppe")
     menu_line()
+    print(f" - Gold: {int(player.gold)}")
+    menu_line()
 
     # Loop through the selected items 
     for index, item in enumerate(items_to_display, start=1):
@@ -151,6 +153,8 @@ def sell_items(player):
     art_planet()
     menu_line()
     print(" ^ Sell to the Medieval World Shoppe")
+    menu_line()
+    print(f" - Gold: {int(player.gold)}")
     menu_line()
     
     if not player.inventory:
@@ -215,6 +219,8 @@ def sell_items(player):
 
         menu_line()
         print(f" - You sold {quantity_choice} {selected_item_name} for {total_gold}g.")
+        menu_line()
+        print(f" - You now have {int(player.gold)}g.")
         menu_line()
         print(" * Press enter to return to the shop menu...")
         menu_line()

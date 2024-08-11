@@ -6,6 +6,7 @@ All versions of Console Quest RPG will be documented here, along with the change
 - Shop inventory automatically refreshes with a list of 5 items
 - Added a repository of items and prices for the shop to sell
 - Prices dynamically change each time you enter it
+- Added gold player data to sell/buy menus
 - Minor tweaks, changes, and bug fixes (as always)
 
 ## Version 0.1.2-pre (Date Finished - 03/13/2024)
