@@ -76,6 +76,31 @@ def load_shop_selling_items(file_path='.\\config\\shopSelling.txt'):
 
     return selling_items
 
+def load_shop_buying_items(file_path='.\\config\\shopBuying.txt'):
+    """
+    Loads items from the shop file, generating a random sell price for each item.
+
+    Parameters:
+        file_path (str): The path to the shop items file.
+
+    Returns:
+        items (list): A list of dictionaries representing items available in the shop.
+    """
+
+    buying_items = []
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            name, min_price, max_price = line.strip().split(', ')
+            min_price, max_price = int(min_price), int(max_price)
+            sell_price = random.randint(min_price, max_price)
+            buying_items.append({
+                'name': name,
+                'sell_price': sell_price
+            })
+
+    return buying_items
+
 def buy_items(player):
     """
     Allows the player to buy items from the shop.
@@ -111,30 +136,44 @@ def buy_items(player):
 
     item_choice = console_input()
 
-def load_shop_buying_items(file_path='.\\config\\shopBuying.txt'):
-    """
-    Loads items from the shop file, generating a random sell price for each item.
+    # Get the selected item
+    selected_item = items_to_display[int(item_choice) - 1]
+    item_name = selected_item['name']
+    item_price = selected_item['sell_price']
 
-    Parameters:
-        file_path (str): The path to the shop items file.
+    # Ask the player how many of the item they want to buy
+    menu_line()
+    print(f" * How many {item_name}s do you want to buy?")
+    menu_line()
+    quantity_choice = console_input()
 
-    Returns:
-        items (list): A list of dictionaries representing items available in the shop.
-    """
+    try:
+        quantity_choice = int(quantity_choice)
+        total_cost = item_price * quantity_choice
+        
+        # Check if the player has enough gold
+        if player.gold < total_cost:
+            raise ValueError("Not enough gold")
 
-    buying_items = []
+        # Subtract the total cost from the player's gold
+        player.gold -= total_cost
 
-    with open(file_path, 'r') as file:
-        for line in file:
-            name, min_price, max_price = line.strip().split(', ')
-            min_price, max_price = int(min_price), int(max_price)
-            sell_price = random.randint(min_price, max_price)
-            buying_items.append({
-                'name': name,
-                'sell_price': sell_price
-            })
+        # Add the purchased items to the player's inventory
+        if item_name in player.inventory:
+            player.inventory[item_name] += quantity_choice
+        else:
+            player.inventory[item_name] = {'count': quantity_choice}
 
-    return buying_items
+        menu_line()
+        print(f" * You bought {quantity_choice} {item_name}(s) for {total_cost}g!")
+        menu_line()
+        print(f" - You now have {int(player.gold)}g.")
+        menu_line()
+        print(" * Press enter to return to the shop menu...")
+        menu_line()
+        console_input()
+    except ValueError:
+        print(" * Invalid selection or insufficient funds.")
 
 def sell_items(player):
     """
