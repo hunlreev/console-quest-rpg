@@ -2,7 +2,7 @@
 Module Name: main.py
 Description: Contains the actual gameplay loop and all the pieces that are implemented for it.
 Author: Hunter Reeves
-Date: 2024-08-11
+Date: 2024-08-12
 '''
 
 from modules.menu import console_input, clear_console, main_menu, pause_menu
@@ -359,7 +359,7 @@ def print_all_stats(player):
     if player.total_deaths == 0:
         kill_death_ratio = "N/A"
     else:
-        kill_death_ratio = player.total_kills / player.total_deaths
+        kill_death_ratio = round(player.total_kills / player.total_deaths, 1)
     print(f" - Kill/Death Ratio: {kill_death_ratio}")
     menu_line()
 
