@@ -353,8 +353,14 @@ def print_all_stats(player):
     print(f" - Physical defense: {player.physical_defense}")
     print(f" - Magical defense: {player.magical_defense}")
     menu_line()
-    print(f" - Enemies Defeated: {player.total_kills}")
+    print(f" - Enemies Killed: {player.total_kills}")
     print(f" - Number of Deaths: {player.total_deaths}")
+    # Determine KD Ratio
+    if player.total_deaths == 0:
+        kill_death_ratio = "N/A"
+    else:
+        kill_death_ratio = player.total_kills / player.total_deaths
+    print(f" - Kill/Death Ratio: {kill_death_ratio}")
     menu_line()
 
 def check_dodge(attacker, defender, dodge_threshold):
