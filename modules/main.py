@@ -136,6 +136,10 @@ def buy_items(player):
 
     item_choice = console_input()
 
+    # Exit if user doesn't enter in a number
+    if item_choice == '':
+        return
+
     # Get the selected item
     selected_item = items_to_display[int(item_choice) - 1]
     item_name = selected_item['name']
