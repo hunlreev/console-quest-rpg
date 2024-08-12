@@ -157,19 +157,16 @@ class Enemy:
             for line in file:
                 parts = line.strip().split(',')
                 
-                if len(parts) == 6:
+                if len(parts) == 4:
                     enemy_type = parts[0].strip()
                     name = parts[1].strip()
                     min_count = int(parts[2].strip())
                     max_count = int(parts[3].strip())
-                    min_price = float(parts[4].strip())
-                    max_price = float(parts[5].strip())
                     
                     count = random.randint(min_count, max_count)
-                    price = round(random.uniform(min_price, max_price), 0)
                     
                     if enemy_type == self.type:
-                        drops[name] = {'type': enemy_type, 'name': name, 'count': count, 'price': price}
+                        drops[name] = {'type': enemy_type, 'name': name, 'count': count}
                         return drops
                     
             return drops

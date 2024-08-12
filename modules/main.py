@@ -533,7 +533,6 @@ def enemy_encounter(player, message):
         for item_name, item_info in enemy.dropped_item.items():
             item_name = item_info['name']
             item_count = item_info['count']
-            item_price = item_info['price']
             
             if item_count <= 0:
                 continue
@@ -543,7 +542,7 @@ def enemy_encounter(player, message):
             if item_name in player.inventory:
                 player.inventory[item_name]['count'] += item_count
             else:
-                player.inventory[item_name] = {'count': item_count, 'price': item_price}
+                player.inventory[item_name] = {'count': item_count}
         
     enemy = Enemy(player.level, 2, player.location)
     turn_counter = 1

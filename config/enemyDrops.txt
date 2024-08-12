@@ -1,7 +1,7 @@
-Mercenary, Leather Strip, 2, 5, 1, 3
-Imp, Imp Gall, 0, 2, 1, 1
-Ogre, Ogre Teeth, 0, 3, 1, 1
-Goblin, Rusted Metal, 1, 1, 1, 2
-Giant Crab, Chitin Claw, 0, 2, 1, 1
-Skeleton, Old Bone, 1, 3, 1, 1
-Bandit, Faded Cloth, 2, 5, 1, 4
+Mercenary, Leather Strip, 0, 3
+Imp, Imp Gall, 1, 2
+Ogre, Ogre Teeth, 1, 3
+Goblin, Rusted Metal, 1, 2
+Giant Crab, Chitin Claw, 1, 2
+Skeleton, Old Bone, 1, 3
+Bandit, Faded Cloth, 0, 4
