@@ -783,13 +783,18 @@ def start_game(player):
             menu_line()
             console_input()
         elif user_input == '4':
-            # Add back view inventory (of course its needed)
             clear_console()
             art_dragon()
             menu_line()
-            print(" ^ Current Inventory")
-            menu_line()
-            print(" - Not yet implemented.")
+
+            if not player.inventory:
+                print(" ^ Your inventory is currently empty.")
+            else:
+                print(f" ^ {player.name}'s Inventory:")
+                menu_line()
+                for item, details in player.inventory.items():
+                    print(f" - {item} (x{details['count']})")
+
             menu_line()
             print(" * Press enter to return to the game...")
             menu_line()
