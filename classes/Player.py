@@ -2,7 +2,7 @@
 Class Name: Player.py
 Description: Default Player class of which all other characters will use.
 Author: Hunter Reeves
-Date: 2024-03-13
+Date: 2024-08-11
 '''
 
 from modules.menu import menu_line
@@ -182,14 +182,14 @@ class Player:
             menu_line()
             print(f" - Attribute Points Remaining: {self.attribute_points}")
             menu_line()
-            print(" 1. Strength     - (Affects Max Stamina, Physical Damage)")
-            print(" 2. Endurance    - (Affects Max Health, Physical Defense)")
-            print(" 3. Intelligence - (Affects Max Mana, Magical Damage)")
-            print(" 4. Willpower    - (Spell Effectiveness, Magical Defense)")
-            print(" 5. Agility      - (Dodge Chance, Critical Hit)")
-            print(" 6. Speed        - (Run Away, Faster Resting)")
+            print(f" 1. Strength     - {self.attributes['Strength']} (Max Stamina, Physical Damage)")
+            print(f" 2. Endurance    - {self.attributes['Endurance']} (Max Health, Physical Defense)")
+            print(f" 3. Intelligence - {self.attributes['Intelligence']} (Max Mana, Magical Damage)")
+            print(f" 4. Willpower    - {self.attributes['Willpower']} (Spell Casting, Magical Defense)")
+            print(f" 5. Agility      - {self.attributes['Agility']} (Dodge Chance, Critical Hit)")
+            print(f" 6. Speed        - {self.attributes['Speed']} (Run Away, Faster Resting)")
             menu_line()
-            print(" * Enter the number of the attribute to increase (0 to finish): ")
+            print(" * Enter the number of the attribute to increase (0 to save points): ")
             menu_line()
 
             choice = console_input()
