@@ -1,18 +1,60 @@
 '''
-Class Name: Player.py
-Description: Default Player class of which all other characters will use.
-Author: Hunter Reeves
-Date: 2024-08-11
+Default Player class that serves as the base for all character types in the game.
+
+This class encapsulates essential attributes and methods for managing player 
+characters, including their identity, stats, inventory, and level progression. 
+All character types will inherit from this class, allowing for shared functionality 
+while enabling specific customization for different character classes.
+
+Key Features:
+- Manages player attributes like name, race, class, and various stats.
+- Handles experience points and level-up mechanics.
+- Supports inventory management and interaction with game elements.
+- Provides methods for visualizing stats and recovering health, mana, and stamina.
 '''
 
-from modules.menu import menu_line
-from modules.core import console_input, clear_console
-from modules.console_art import art_stars
+from src.modules.MainMenu import MenuLine
+from src.modules.CoreGameFunctions import ConsoleInput, ClearConsole
+from src.modules.ArtAssets import DisplayStars
 
 import random
 import time
 
 class Player:
+    """
+    Represents a player character in the game with various attributes and stats.
+
+    Attributes:
+        name (str): The player's name.
+        sex (str): The player's gender.
+        race (str): The player's race.
+        birth_sign (str): The player's chosen birth sign.
+        player_class (str): The player's class (e.g., warrior, mage).
+        attributes (dict): A dictionary containing the player's primary attributes, such as Strength, Endurance, Intelligence, Willpower, Agility, and Speed.
+        level (int): The player's current level.
+        experience (int): The player's current experience points.
+        next_experience (int): The amount of experience needed to reach the next level.
+        attribute_points (int): Points earned at level-up that can be spent to increase attributes.
+        gold (int): The player's current amount of gold.
+        location (str): The player's current location.
+        description (str): A brief description of the player's class.
+        total_kills (int): The total number of enemies the player has killed.
+        total_deaths (int): The total number of times the player has died.
+        inventory (dict): The player's current inventory of items.
+        stats (dict): A dictionary containing current stats such as Health, Mana, and Stamina.
+        max_stats (dict): The maximum values for Health, Mana, and Stamina.
+        defense_modifier (int): A modifier applied to defense calculations.
+        physical_attack (float): The player's physical attack power.
+        magical_attack (float): The player's magical attack power.
+        critical_hit (float): The player's chance for critical hits.
+        physical_defense (float): The player's physical defense power.
+        magical_defense (float): The player's magical defense power.
+        stamina_cost (int): The amount of stamina required for actions.
+        mana_cost (int): The amount of mana required for spells.
+        dodge_chance (float): The player's chance to dodge attacks.
+        critical_chance (float): The player's chance to land a critical hit.
+    """
+
     def __init__(self, name, sex, race, birth_sign, player_class, attributes):
         self.name = name
         self.sex = sex
@@ -171,28 +213,28 @@ class Player:
 
             return attribute_mapping.get(choice)
 
-        clear_console()
+        ClearConsole()
 
         self.attribute_points += 5
 
         while self.attribute_points > 0:
-            art_stars()
-            menu_line()
+            DisplayStars()
+            MenuLine()
             print(f" ^ Congratulations, {self.name}! You are now Level {self.level + 1}.")
-            menu_line()
+            MenuLine()
             print(f" - Attribute Points Remaining: {self.attribute_points}")
-            menu_line()
+            MenuLine()
             print(f" 1. Strength     - {self.attributes['Strength']} (Max Stamina, Physical Damage)")
             print(f" 2. Endurance    - {self.attributes['Endurance']} (Max Health, Physical Defense)")
             print(f" 3. Intelligence - {self.attributes['Intelligence']} (Max Mana, Magical Damage)")
             print(f" 4. Willpower    - {self.attributes['Willpower']} (Spell Casting, Magical Defense)")
             print(f" 5. Agility      - {self.attributes['Agility']} (Dodge Chance, Critical Hit)")
             print(f" 6. Speed        - {self.attributes['Speed']} (Run Away, Faster Resting)")
-            menu_line()
+            MenuLine()
             print(" * Enter the number of the attribute to increase (0 to save points): ")
-            menu_line()
+            MenuLine()
 
-            choice = console_input()
+            choice = ConsoleInput()
 
             if choice == '0':
                 break
@@ -202,15 +244,15 @@ class Player:
                 if self.attributes[attribute_name] < 100:
                     self.attributes[attribute_name] += 1
                     self.attribute_points -= 1
-                    menu_line()
+                    MenuLine()
                     print(f" - {attribute_name} increased to {self.attributes[attribute_name]}.")
-                    clear_console()
+                    ClearConsole()
                 else:
-                    menu_line()
+                    MenuLine()
                     print(f" - {attribute_name} is already been maxed out. Please try again.")
-                    menu_line()
+                    MenuLine()
                     time.sleep(2)
-                    clear_console()
+                    ClearConsole()
             else:
                 return
 

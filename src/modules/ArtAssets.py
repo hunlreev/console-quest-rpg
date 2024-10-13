@@ -1,19 +1,25 @@
 '''
-Module Name: console_art.py
-Description: Contains the strings of ASCII art used in the game.
-Author: Hunter Reeves
-Date: 2024-03-02
+Contains functions to display ASCII art used throughout the game.
+
+This module provides a collection of functions that render various ASCII art representations 
+for different characters, items, and themes within the Console Quest RPG. Each function is dedicated 
+to displaying a specific piece of art, enhancing the visual experience for players and adding 
+flair to the game's presentation.
+
+Functions:
+- DisplaySkull: Displays ASCII art representing a skull.
+- DisplayRogue: Displays ASCII art representing a rogue character.
+- DisplayMage: Displays ASCII art representing a mage character.
+- DisplayWarrior: Displays ASCII art representing a warrior character.
+- DisplayBattleAxe: Displays ASCII art of a battle axe.
+- DisplayStars: Displays ASCII art of stars for decorative purposes.
+- DisplayPlanet: Displays ASCII art for a race menu.
+- DisplayDragon: Displays ASCII art of a dragon.
 '''
 
-def art_skull():
+def DisplaySkull() -> None:
     """
-    Prints art of a skull
-
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art representing a skull.
     """
 
     skull = """
@@ -43,15 +49,9 @@ def art_skull():
 
     print(skull)
 
-def art_rogue():
+def DisplayRogue() -> None:
     """
-    Prints art for warrior
-    
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art representing a rogue character.
     """
 
     rogue = """
@@ -77,15 +77,9 @@ def art_rogue():
 
     print(rogue)
 
-def art_mage():
+def DisplayMage() -> None:
     """
-    Prints art for warrior
-    
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art representing a mage character.
     """
 
     mage = """
@@ -114,15 +108,9 @@ def art_mage():
 
     print(mage)
 
-def art_warrior():
+def DisplayWarrior() -> None:
     """
-    Prints art for warrior
-
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art representing a warrior character.
     """
 
     warrior = """
@@ -154,18 +142,12 @@ def art_warrior():
 
     print(warrior)
 
-def art_battleaxe():
+def DisplayBattleAxe() -> None:
     """
-    Prints art of a battle axe
-
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art of a battle axe.
     """
 
-    something = """
+    battleaxe = """
                                                 _.gd8888888bp._
                                              .g88888888888888888p.
                                             .d8888P""       ""Y8888b.
@@ -186,17 +168,11 @@ def art_battleaxe():
                                                ""YY8888888PP""
 """
 
-    print(something)
+    print(battleaxe)
 
-def art_stars():
+def DisplayStars() -> None:
     """
-    Prints art of stars
-
-    Parameters:
-        None.
-
-    Returns
-        None.
+    Displays ASCII art of stars for decorative purposes.
     """
 
     stars = """
@@ -219,15 +195,9 @@ def art_stars():
 
     print(stars)
 
-def art_planet():
+def DisplayPlanet() -> None:
     """
-    Prints art for race menu
-    
-    Parameters:
-        None.
-    
-    Returns:
-        None.
+    Displays ASCII art for a race menu.
     """
 
     planet = """
@@ -250,15 +220,9 @@ def art_planet():
 
     print(planet)
 
-def art_dragon():
+def DisplayDragon() -> None:
     """
-    Prints art of a dragon
-    
-    Parameters:
-        None.
-    
-    Returns:
-        None.
+    Displays ASCII art of a dragon.
     """
 
     # ASCII Art by Adrian Elhart

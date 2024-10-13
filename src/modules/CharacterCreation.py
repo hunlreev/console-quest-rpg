@@ -1,12 +1,21 @@
 '''
-Module Name: creation.py
-Description: Handles the selection of race, birthsign, and class for the player's character.
-Author: Hunter Reeves
-Date: 2024-03-01
+Module for character creation in the game.
+
+This module handles the selection process for a player's character, including race, birthsign, and class.
+It provides a series of menus that guide the player through the character creation process,
+allowing them to choose attributes that will affect gameplay. 
+
+Functions:
+- CharacterMenuSelection: Displays a menu for the player to select a character attribute (race, birthsign, or class).
+- SelectClass: Manages the selection of the player's class, presenting options and modifying attributes based on the chosen class.
+- SelectBirthsign: Manages the selection of the player's birthsign, presenting options and modifying attributes based on the chosen birthsign.
+- SelectRace: Manages the selection of the player's race, presenting options and providing associated attributes.
 '''
 
-from modules.core import console_input, clear_console
-from modules.console_art import art_warrior, art_mage, art_rogue
+from src.modules.CoreGameFunctions import ConsoleInput, ClearConsole
+from src.modules.ArtAssets import DisplayWarrior, DisplayMage, DisplayRogue
+
+from collections.abc import Callable
 
 m_attributes = " Strength\t- {}" + " " * 16 + "(Affects Max Stamina, Physical Damage)\n" \
                " Endurance\t- {}" + " " * 16 + "(Affects Max Health, Physical Defense)\n" \
@@ -15,9 +24,9 @@ m_attributes = " Strength\t- {}" + " " * 16 + "(Affects Max Stamina, Physical Da
                " Agility\t- {}" + " " * 26 + "(Dodge Chance, Critical Hit)\n" \
                " Speed\t\t- {}" + " " * 28 + "(Run Away, Faster Resting)"
 
-def selection_menu(name, art, menu_line, options, type = ""):
+def CharacterMenuSelection(name: str, art: Callable, menu_line: Callable, options: list, type: str = "") -> str:
     """
-    Handles the default menu for selecting race, birthsign, or class.
+    Displays a menu for the player to select a character attribute (race, birthsign, or class).
     
     Parameters:
         name (str): The name of the character.
@@ -30,7 +39,7 @@ def selection_menu(name, art, menu_line, options, type = ""):
         option (str): The option the player selected for their selection choices.
     """
     
-    clear_console()
+    ClearConsole()
     art()
     menu_line()
     print(" * " + name + "... what is your " + type + "?")
@@ -40,15 +49,15 @@ def selection_menu(name, art, menu_line, options, type = ""):
         print(f" {number}. {option}")
 
     menu_line()
-    option = console_input()
+    option = ConsoleInput()
 
-    clear_console()
+    ClearConsole()
 
     return option
 
-def select_class(name, attributes, art_class, menu_line):
+def SelectClass(name: str, attributes: list, art_class: Callable, menu_line: Callable) -> tuple[str, list]:
     """
-    Handles the menu and selection of the player's class.
+    Manages the selection of the player's class, presenting options and modifying attributes based on the chosen class.
 
     Parameters:
         name (str): The name of the character.
@@ -70,7 +79,7 @@ def select_class(name, attributes, art_class, menu_line):
     }
     
     while True:
-        option = selection_menu(name, art_class, menu_line, class_options, "class")
+        option = CharacterMenuSelection(name, art_class, menu_line, class_options, "class")
 
         player_class = ""
         class_attributes = {}
@@ -79,15 +88,15 @@ def select_class(name, attributes, art_class, menu_line):
             if option == '1':
                 class_name = class_options[0]
                 class_attributes = {'Strength': 5, 'Endurance': 5, 'Speed': -5}
-                art = art_warrior
+                art = DisplayWarrior
             elif option == '2':
                 class_name = class_options[1]
                 class_attributes = {'Intelligence': 5, 'Willpower': 5, 'Agility': -5}
-                art = art_mage
+                art = DisplayMage
             elif option == '3':
                 class_name = class_options[2]
                 class_attributes = {'Agility': 5, 'Speed': 5, 'Endurance': -5}
-                art = art_rogue
+                art = DisplayRogue
 
             art()
             menu_line()
@@ -103,7 +112,7 @@ def select_class(name, attributes, art_class, menu_line):
 
             print("\n * Is this your class? (Y/N)")
             menu_line()
-            response = console_input()
+            response = ConsoleInput()
 
             if response.lower() == "y":
                 player_class = class_name
@@ -113,9 +122,9 @@ def select_class(name, attributes, art_class, menu_line):
             
     return player_class, attributes
 
-def select_birthsign(name, attributes, art_birthsign, menu_line):
+def SelectBirthsign(name: str, attributes: list, art_birthsign: Callable, menu_line: Callable) -> tuple[str, list]:
     """
-    Handles the menu and selection of the player's birthsign.
+    Manages the selection of the player's birthsign, presenting options and modifying attributes based on the chosen birthsign.
 
     Parameters:
         name (str): The name of the character.
@@ -137,7 +146,7 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
     }
 
     while True:
-        option = selection_menu(name, art_birthsign, menu_line, birthsign_options, "birthsign")
+        option = CharacterMenuSelection(name, art_birthsign, menu_line, birthsign_options, "birthsign")
 
         birthsign = ""
         birthsign_attributes = {}
@@ -167,7 +176,7 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
 
             print("\n * Is this your birthsign? (Y/N)")
             menu_line()
-            response = console_input()
+            response = ConsoleInput()
 
             if response.lower() == "y":
                 birthsign = birthsign_name
@@ -177,9 +186,9 @@ def select_birthsign(name, attributes, art_birthsign, menu_line):
             
     return birthsign, attributes
 
-def select_race(name, art_race, menu_line):
+def SelectRace(name: str, art_race: Callable, menu_line: Callable) -> tuple[str, dict]:
     """
-    Handles the menu and selection of the player's race.
+    Manages the selection of the player's race, presenting options and providing associated attributes.
 
     Parameters:
         name (str): The name of the character.
@@ -210,7 +219,7 @@ def select_race(name, art_race, menu_line):
     }
                    
     while True:
-        option = selection_menu(name, art_race, menu_line, race_options, "race")
+        option = CharacterMenuSelection(name, art_race, menu_line, race_options, "race")
 
         race = ""
         race_attributes = {}
@@ -230,7 +239,7 @@ def select_race(name, art_race, menu_line):
 
             print("\n * Is this your race? (Y/N)")
             menu_line()
-            response = console_input()
+            response = ConsoleInput()
 
             if response.lower() == "y":
                 race = race_name

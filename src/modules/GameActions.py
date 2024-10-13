@@ -1,35 +1,43 @@
 '''
-Module Name: game.py
-Description: Core functionality for the main menu and starting the game
-Author: Hunter Reeves
-Date: 2024-03-02
+Core functionality for the main menu and starting the game.
+
+This module handles the main menu operations, including displaying game 
+information, deleting and loading saved games, and starting new games. 
+It includes functions to manage player character creation and interactions 
+with saved game files. The game supports basic ASCII art for a visual 
+presentation and aims to provide a text-based RPG experience.
+
+Functions:
+- AboutGame: Displays some information and background about the game, how to play, etc.
+- DeleteGame: Deletes an existing saved game.
+- LoadGame: Loads a saved character from a file.
+- SaveGame: Saves the current player character to a file.
+- GetSex: Prompts the user to select the player's sex.
+- GetName: Prompts the user to enter the player's name.
+- NewGame: Initializes a new game with character attributes.
 '''
 
-from modules.core import clear_console
-from modules.console_art import art_dragon, art_planet, art_stars, art_battleaxe
-from modules.creation import select_race, select_birthsign, select_class
-from modules.menu import menu_line, return_to_menu
+from src.modules.CoreGameFunctions import ClearConsole
+from src.modules.ArtAssets import DisplayDragon, DisplayPlanet, DisplayStars, DisplayBattleAxe
+from src.modules.CharacterCreation import SelectRace, SelectBirthsign, SelectClass
+from src.modules.MainMenu import MenuLine, ReturnToMainMenu
+
+from src.classes.Player import Player
 
 import os
 import pickle
 
-def about_game():
+def AboutGame() -> None:
     """
-    Prints some information and background about the game, how to play, etc.
-    
-    Parameters:
-        None.
-    
-    Returns:
-        None.
+    Displays some information and background about the game, how to play, etc.
     """
 
-    clear_console()
+    ClearConsole()
 
-    art_dragon()
-    menu_line()
+    DisplayDragon()
+    MenuLine()
     print(" ^ About Console Quest RPG")
-    menu_line()
+    MenuLine()
     print(" Console Quest RPG is an ASCII-based, text RPG inspired by several")
     print(" games such as the Elder Scrolls series, and classic ASCII games.")
     print("\n To play, simply follow along as you go and enter commands as needed.")
@@ -37,24 +45,18 @@ def about_game():
     print("\n If you find any bugs, please let me know by shooting me a message")
     print(" over Discord. My username is SaxyButters! I welcome all messages!")
     print("\n Console Quest RPG was developed by Hunter Reeves. All rights reserved.")
-    menu_line()
+    MenuLine()
 
-    return_to_menu()
+    ReturnToMainMenu()
 
-def delete_game():
+def DeleteGame() -> None:
     """
-    Deletes an existing save file.
-
-    Parameters:
-        None.
-
-    Returns:
-        None.
+    Deletes an existing saved game.
     """
 
-    clear_console()
+    ClearConsole()
 
-    art_dragon()
+    DisplayDragon()
 
     saves_directory = "saves"
 
@@ -67,13 +69,13 @@ def delete_game():
     if not saved_games:
         return ""
     
-    menu_line()
+    MenuLine()
     print(" * Select a save to delete (Enter 0 to cancel):")
-    menu_line()
+    MenuLine()
     for idx, game in enumerate(saved_games, start = 1):
         save_name = os.path.splitext(game)[0]
         print(f" {idx}. {save_name}")
-    menu_line()
+    MenuLine()
 
     try:
         choice = int(input(" > "))
@@ -83,12 +85,12 @@ def delete_game():
 
     if 0 < choice <= len(saved_games):
         selected_game = saved_games[choice - 1]
-        menu_line()
+        MenuLine()
         print(f" * Are you sure you want to delete this save? (Y/N)")
-        menu_line()
+        MenuLine()
         confirm = str(input(" > "))
         
-        menu_line()
+        MenuLine()
 
         if confirm.lower() == 'y':
             file_path = os.path.join(saves_directory, selected_game)
@@ -100,53 +102,47 @@ def delete_game():
     else:
         return
 
-def load_game():
+def LoadGame() -> None:
     """
-    Loads an existing character from a previously saved file.
-    
-    Parameters:
-        None.
-    
-    Returns:
-        None.
+    Loads a saved character from a file.
     """
 
     saves_directory = 'saves\\'
 
-    clear_console()
-    art_dragon()
+    ClearConsole()
+    DisplayDragon()
 
     save_files = [f for f in os.listdir(saves_directory) if f.endswith('.pkl')]
 
     if not save_files:
-        menu_line()
+        MenuLine()
         print(" ^ Load Game")
-        menu_line()
+        MenuLine()
         print(" No saved games found. You will need to start a new game.\n\n Please go back to the main menu to start a new game.")
-        menu_line()
-        return_to_menu()
+        MenuLine()
+        ReturnToMainMenu()
         return None
 
-    menu_line()
+    MenuLine()
     print(" ^ Load Game")
-    menu_line()
+    MenuLine()
     print(" * Choose a saved character to load:")
-    menu_line()
+    MenuLine()
     for i, save_file in enumerate(save_files, start = 1):
         remove_pkl_from_name = os.path.splitext(save_file)[0]
         print(f" {i}. {remove_pkl_from_name}")
 
     while True:
         try:
-            menu_line()
+            MenuLine()
             choice = int(input(" > "))
             if 0 <= choice <= len(save_files):
                 break
             else:
-                menu_line()
+                MenuLine()
                 print(" * Invalid choice. Please enter a valid number.")
         except ValueError:
-            menu_line()
+            MenuLine()
             print(" * Invalid input. Please enter a number.")
 
     selected_save_file = save_files[choice - 1]
@@ -156,23 +152,20 @@ def load_game():
 
     return player
 
-def save_game(player):
+def SaveGame(player: Player) -> None:
     """
-    Saves the current player to a file for loading later on.
+    Saves the current player character to a file.
     
     Parameters:
         player (Player): The character that will be saved.
-    
-    Returns:
-        None.
     """
 
     with open('saves\\' + player.name + '.pkl', 'wb') as file:
         pickle.dump(player, file)
         
-def get_sex(name):
+def GetSex(name: str) -> str:
     """
-    Gets the sex of the player.
+    Prompts the user to select the player's sex.
     
     Parameters:
         name (string): Name of the player.
@@ -181,70 +174,62 @@ def get_sex(name):
         sex (string): Sex of the player.
     """
     
-    art_dragon()
-    menu_line()
+    DisplayDragon()
+    MenuLine()
     print(" ^ New Game")
-    menu_line()
+    MenuLine()
     print(f" * {name}... what is your sex?")
-    menu_line()
+    MenuLine()
     print(" 1. Male\n 2. Female")
-    menu_line()
+    MenuLine()
     sex = input(" > ")
     if sex == '1':
         sex = 'Male'
     elif sex == '2':
         sex = 'Female'
     else:
-        sex = 'Unknown'
-    clear_console()
+        sex = 'Other'
+    ClearConsole()
     
     return sex
         
-def get_name():
+def GetName() -> str:
     """
-    Gets the name of the player.
-    
-    Parameters:
-        None.
+    Prompts the user to enter the player's name.
     
     Returns:
         name (string): Name of the player.
     """
     
-    art_dragon()
-    menu_line()
+    DisplayDragon()
+    MenuLine()
     print(" ^ New Game")
-    menu_line()
+    MenuLine()
     print(" * Enter thy name:")
-    menu_line()
+    MenuLine()
     name = input(" > ")
     if name == "":
         name = 'Player'
-    clear_console()
+    ClearConsole()
     
     return name
 
-def new_game():
+def NewGame() -> tuple[str, str, str, str, str, list]:
     """
-    Creates a new character save file and starts the game.
-    
-    Parameters:
-        None.
+    Initializes a new game with character attributes.
     
     Returns:
-        None.
+        tuple: A tuple containing the 
+        character's name, sex, race, birth sign, class, and a list of attributes.
     """
 
-    clear_console()
+    ClearConsole()
     
-    name = get_name()
+    name = GetName()
+    sex = GetSex(name)
     
-    sex = get_sex(name)
-
-    race, attributes = select_race(name, art_planet, menu_line)
-
-    birth_sign, attributes = select_birthsign(name, attributes, art_stars, menu_line)
-
-    player_class, attributes = select_class(name, attributes, art_battleaxe, menu_line)
+    race, attributes = SelectRace(name, DisplayPlanet, MenuLine)
+    birth_sign, attributes = SelectBirthsign(name, attributes, DisplayStars, MenuLine)
+    player_class, attributes = SelectClass(name, attributes, DisplayBattleAxe, MenuLine)
 
     return name, sex, race, birth_sign, player_class, attributes
