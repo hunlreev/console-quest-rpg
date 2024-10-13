@@ -130,7 +130,7 @@ def StartGame(player: Player) -> None:
             ClearConsole()
             DisplayStars()
             RecoverStats(player)
-        # Debug commands for giving experience and healing the player to max stats
+        # Debug command for giving experience
         elif user_input == '7':
             if player.level >= 50:
                 player.experience = player.next_experience
@@ -140,10 +140,23 @@ def StartGame(player: Player) -> None:
             if player.experience >= player.next_experience:
                 ClearConsole()
                 player.level_up()
+        # Debug command for giving max health, mana, and stamina
         elif user_input == '8':
             player.stats['Health'] = player.max_stats['Health']
             player.stats['Mana'] = player.max_stats['Mana']
             player.stats['Stamina'] = player.max_stats['Stamina']
+        # Debug command for giving 100 gold
+        elif user_input == 'g':
+            player.gold += 100
+        # Debug command for giving 99 of every enemy drop
+        elif user_input == 'd':
+            enemy_drops = ['Leather Strip', 'Imp Gall', 'Ogre Teeth', 'Rusted Metal', 'Chitin Claw', 'Old Bone', 'Faded Cloth']
+    
+            for item in enemy_drops:
+                if item in player.inventory:
+                    player.inventory[item]['count'] += 99
+                else:
+                    player.inventory[item] = {'count': 99}
 
         else:
             ReturnToGame(user_input)
