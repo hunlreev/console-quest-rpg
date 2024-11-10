@@ -20,7 +20,7 @@ from src.modules.TextFormatter import MenuLine
 from src.modules.CombatEncounter import StartEncounter
 from src.modules.CoreGameFunctions import ReturnToGame
 
-from src.classes.Player import Player
+from src.classes.Player import Player # Change either to Player or old_Player
 
 import time
 import random
@@ -33,8 +33,10 @@ def RecoverStats(player: Player) -> None:
         player (Player): The character save file that the user goes through the game with.
     """
 
-    seconds_to_wait = player.rest()
+    seconds_to_wait = player.Rest()
+
     MenuLine()
+
     speed = player.attributes['Speed']
     
     if speed < 10:
@@ -63,6 +65,7 @@ def RecoverStats(player: Player) -> None:
         print(" - You take some time to rest and recuperate...")
 
     MenuLine()
+
     time.sleep(seconds_to_wait)
 
 def PrintAllStats(player: Player) -> None:
@@ -72,6 +75,8 @@ def PrintAllStats(player: Player) -> None:
     Parameters:
         player (object): The player
     """
+
+    no_deaths = 0
 
     ClearConsole()
     DisplayStars()
@@ -97,7 +102,7 @@ def PrintAllStats(player: Player) -> None:
     print(f" - Number of Deaths: {player.total_deaths}")
 
     # Determine KD Ratio
-    if player.total_deaths == 0:
+    if player.total_deaths == no_deaths:
         kill_death_ratio = "N/A"
     else:
         kill_death_ratio = round(player.total_kills / player.total_deaths, 1)
@@ -116,17 +121,17 @@ def ExploreLocation(player: Player, locations: list, encounter_rate: float) -> N
     """
     
     player.location = random.choice(locations)
-
     exploration_time = random.choice([(1, "a quick adventure"), (2, "a short, nearby exploration"), (3, "a long journey"), (4, "huge campaign and get lost")])
+    message = ""
+    encounter_roll = random.random()
 
     MenuLine()
     print(f" - You set out for {exploration_time[1]}...")
     MenuLine()
+
     time.sleep(exploration_time[0])
 
-    message = ""
-
-    if random.random() < encounter_rate:
+    if encounter_roll < encounter_rate:
         StartEncounter(player, message)
     else:
         ReturnToGame("")

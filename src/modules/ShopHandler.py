@@ -20,7 +20,7 @@ from src.modules.MainMenu import ConsoleInput, ClearConsole
 from src.modules.ArtAssets import DisplayPlanet
 from src.modules.TextFormatter import MenuLine
 
-from src.classes.Player import Player
+from src.classes.Player import Player # Change either to Player or old_Player
 
 import random
 
@@ -45,6 +45,7 @@ def ShopMenu(player: Player) -> None:
 
         print(" * Please select an option from the menu above...")
         MenuLine()
+
         choice = ConsoleInput()
 
         if choice == "1":
@@ -114,10 +115,11 @@ def BuyItems(player: Player) -> None:
         player (Player): The character save file that the user goes through the game with.
     """
     
+    number_of_random_items = 5
     shop_inventory = LoadShopInventory()
-
-    # Randomly select 5 items from the shop selling items
-    items_to_display = random.sample(shop_inventory, min(5, len(shop_inventory)))
+    items_to_display = random.sample(shop_inventory, min(number_of_random_items, len(shop_inventory)))
+    no_number_entered = ''
+    no_items_chosen = 0
 
     ClearConsole()
     DisplayPlanet()
@@ -139,7 +141,7 @@ def BuyItems(player: Player) -> None:
     item_choice = ConsoleInput()
 
     # Exit if user doesn't enter in a number
-    if item_choice == '':
+    if item_choice == no_number_entered:
         return
 
     # Get the selected item
@@ -151,13 +153,14 @@ def BuyItems(player: Player) -> None:
     MenuLine()
     print(f" * How many {item_name}s do you want to buy?")
     MenuLine()
+
     quantity_choice = ConsoleInput()
 
     try:
         quantity_choice = int(quantity_choice)
 
         # Check for valid quantity (should be greater than 0)
-        if quantity_choice <= 0:
+        if quantity_choice <= no_items_chosen:
             raise ValueError("Quantity must be greater than zero.")
 
         total_cost = item_price * quantity_choice
@@ -233,9 +236,10 @@ def SellItems(player: Player) -> None:
         if shop_item:
             print(f" {index}. {item_name} (x{item_count}) @ {shop_item['sell_price']}g each")
         else:
-            print("ERROR: shopNeeds ")
+            print(" * ERROR: The shop isn't taking that item right now!")
 
     MenuLine()
+    
     # Ask the player what item to sell
     print(f" * Choose an item to sell using the leading number.")
     MenuLine()

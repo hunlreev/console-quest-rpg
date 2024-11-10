@@ -23,8 +23,8 @@ from src.modules.TextFormatter import MenuLine
 from src.modules.StatusBarHandler import UpdateStatusBar, UpdateEnemyHealthBar
 from src.modules.CoreGameFunctions import ReturnToGame
 
+from src.classes.Player import Player # Change either to Player or old_Player
 from src.classes.Enemy import Enemy
-from src.classes.Player import Player
 
 import time
 import random
@@ -78,20 +78,23 @@ def CastSpell(attacker, defender) -> str:
     crit_threshold = round(random.random(), 2)
     dodge_threshold = round(random.random(), 2)
 
+    spell_damage = max(0, attacker.magical_attack - defender.magical_defense)
+    critical_damage = attacker.critical_hit
+
     if attacker.stats['Mana'] < attacker.mana_cost:
         return f" - {attacker.description} doesn't have enough mana to cast a spell right now!"
 
     if crit_threshold < attacker.critical_chance:
         defender.stats['Health'] -= attacker.critical_hit
         attacker.stats['Mana'] -= attacker.mana_cost
-        return f" - {attacker.description} landed a critical hit, dealing massive damage!"
+        return f" - {attacker.description} landed a critical hit, dealing {critical_damage} damage!"
 
     if CheckDodge(attacker, dodge_threshold):
         return f" - {defender.description} dodged the {attacker.description}'s spell!"
 
     defender.stats['Health'] -= max(0, attacker.magical_attack - defender.magical_defense)
     attacker.stats['Mana'] -= attacker.mana_cost
-    return f" - {attacker.description} successfully casted a spell at the {defender.description}!"
+    return f" - {attacker.description} casted a spell at the {defender.description}, dealing {spell_damage} damage!"
 
 def MeleeAttack(attacker, defender) -> str:
     """
@@ -108,23 +111,25 @@ def MeleeAttack(attacker, defender) -> str:
     crit_threshold = round(random.random(), 2)
     dodge_threshold = round(random.random(), 2)
 
+    melee_damage = max(0, attacker.physical_attack - defender.physical_defense)
+    critical_damage = attacker.critical_hit
+
     if attacker.stats['Stamina'] < attacker.stamina_cost:
-        damage = max(0, attacker.physical_attack * 0.75 - defender.physical_defense)
-        defender.stats['Health'] -= damage
-        return f" - {attacker.description} doesn't have enough stamina and isn't as effective!"
+        weakened_damage = max(0, attacker.physical_attack * 0.75 - defender.physical_defense)
+        defender.stats['Health'] -= weakened_damage
+        return f" - {attacker.description} doesn't have enough stamina, only dealing {weakened_damage} damage!"
 
     if crit_threshold < attacker.critical_chance:
         defender.stats['Health'] -= attacker.critical_hit
         attacker.stats['Stamina'] -= attacker.stamina_cost
-        return f" - {attacker.description} landed a critical hit, dealing massive damage!"
+        return f" - {attacker.description} landed a critical hit, dealing {critical_damage} damage!"
 
     if CheckDodge(attacker, dodge_threshold):
         return f" - {defender.description} dodged the {attacker.description}'s attack!"
-
-    damage = max(0, attacker.physical_attack - defender.physical_defense)
-    defender.stats['Health'] -= damage
+    
+    defender.stats['Health'] -= melee_damage
     attacker.stats['Stamina'] -= attacker.stamina_cost
-    return f" - {attacker.description} successfully attacked the {defender.description}!"
+    return f" - {attacker.description} attacked the {defender.description}, dealing {melee_damage} damage!"
     
 def EnemyDecides(enemy: Enemy, player: Player) -> str:
     """
@@ -212,7 +217,7 @@ def StartEncounter(player: Player, message: str) -> None:
             else:
                 player.inventory[item_name] = {'count': item_count}
         
-    enemy = Enemy(player.level, 2, player.location)
+    enemy = Enemy(player.level, 2)
     turn_counter = 1
     
     if player.attributes['Speed'] >= enemy.attributes['Speed']:

@@ -32,7 +32,7 @@ def MenuTitle(scalar: int = 26) -> None:
 
     print(" " * scalar + "-- Console Quest RPG --" + " " * scalar)
 
-def MenuSelection(scalar: int = 49, version: str = "(v0.2.1-pre)") -> None:
+def MenuSelection(scalar: int = 49, version: str = "(v0.2.2-pre)") -> None:
     """
     Prints the available options in the menu, including version information.
     

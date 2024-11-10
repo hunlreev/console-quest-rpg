@@ -14,7 +14,7 @@ Functions:
 - UpdateStatusBar: Updates and displays the player's health, mana, and stamina, giving a complete overview of their current stats.
 '''
 
-from src.classes.Player import Player
+from src.classes.Player import Player # Change either to Player or old_Player
 from src.classes.Enemy import Enemy
 
 def UpdateEnemyHealthBar(enemy: Enemy) -> None:
@@ -25,7 +25,9 @@ def UpdateEnemyHealthBar(enemy: Enemy) -> None:
         enemy (object): The enemy.
     """
 
-    health_bar, health_display = enemy.generate_stat_bar(enemy.stats['Health'], enemy.max_stats['Health'], 50, 'red')
+    bar_length = 50
+
+    health_bar, health_display = enemy.GenerateStatBar(enemy.stats['Health'], enemy.max_stats['Health'], bar_length, 'red')
     
     print(f" -  HP: {health_bar} " + health_display)
 
@@ -39,7 +41,7 @@ def UpdateExperienceBar(player: Player) -> None:
 
     bar_length = 46
     
-    exp_bar, exp_display = player.generate_exp_bar(round(player.experience, 2), round(player.next_experience, 2), bar_length, 'yellow')
+    exp_bar, exp_display = player.GenerateExpBar(round(player.experience, 2), round(player.next_experience, 2), bar_length, 'yellow')
 
     print(f" - EXP: {exp_bar} " + exp_display)
 
@@ -53,9 +55,9 @@ def UpdateStatusBar(player: Player) -> None:
 
     bar_length = 50
     
-    health_bar, health_display = player.generate_stat_bar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2), bar_length, 'red')
-    mana_bar, mana_display = player.generate_stat_bar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2), bar_length, 'blue')
-    stamina_bar, stamina_display = player.generate_stat_bar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2),bar_length, 'green')
+    health_bar, health_display = player.GenerateStatBar(round(player.stats['Health'], 2), round(player.max_stats['Health'], 2), bar_length, 'red')
+    mana_bar, mana_display = player.GenerateStatBar(round(player.stats['Mana'], 2), round(player.max_stats['Mana'], 2), bar_length, 'blue')
+    stamina_bar, stamina_display = player.GenerateStatBar(round(player.stats['Stamina'], 2), round(player.max_stats['Stamina'], 2),bar_length, 'green')
 
     print(f" -  HP: {health_bar} " + health_display)
     print(f" -  MP: {mana_bar} " + mana_display)

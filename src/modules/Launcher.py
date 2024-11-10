@@ -24,7 +24,7 @@ from src.modules.ShopHandler import ShopMenu
 from src.modules.StatusBarHandler import UpdateStatusBar, UpdateExperienceBar
 from src.modules.PlayerActions import ExploreLocation, PrintAllStats, RecoverStats
 
-from src.classes.Player import Player
+from src.classes.Player import Player # Change either to Player or old_Player
 
 def DisplayMenu(player: Player) -> str:
     """
@@ -58,8 +58,8 @@ def DisplayMenu(player: Player) -> str:
 
     options = ["Pause Game", "Explore World", "View Stats", "View Inventory", "Visit Shop", "Rest"]
 
-    for i, option in enumerate(options, 1):
-        print(f" {i}. {option}")
+    for index, option in enumerate(options, 1):
+        print(f" {index}. {option}")
 
     MenuLine()
 
@@ -139,7 +139,7 @@ def StartGame(player: Player) -> None:
                 
             if player.experience >= player.next_experience:
                 ClearConsole()
-                player.level_up()
+                player.LevelUp()
         # Debug command for giving max health, mana, and stamina
         elif user_input == '8':
             player.stats['Health'] = player.max_stats['Health']

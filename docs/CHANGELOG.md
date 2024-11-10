@@ -1,6 +1,17 @@
 # Console Quest RPG - Patches and Updates
 All versions of Console Quest RPG will be documented here, along with the changelog and bug fixes.
 
+## Version 0.2.2-pre (Date Finished - 11/10/2024)
+- Refactored the Enemy class
+- Refactored the Player class
+- The type of enemy is no longer tied to the player's location and is entirely random now
+- Changed wording of "sex" in character creation to "gender" and added more options for diversity purposes
+- Added damage amount indicators during encounters so you can see what damage is being dealt.
+- Tweaked wording of the combat encounter messages as well, cleaned up that code a bit.
+- Updated the enemy scaling so the enemy attributes scale up with the player's level.
+- Minor tweaks, changes, and bug fixes (as always)
+- Removed Herobrine
+
 ## Version 0.2.1-pre (Date Finished - 10/13/2024)
 - Refactored the entire codebase, naming conventions, etc.
 - Added more docstring and cleaned up method declarations

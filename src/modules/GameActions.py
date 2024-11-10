@@ -12,7 +12,7 @@ Functions:
 - DeleteGame: Deletes an existing saved game.
 - LoadGame: Loads a saved character from a file.
 - SaveGame: Saves the current player character to a file.
-- GetSex: Prompts the user to select the player's sex.
+- GetGender: Prompts the user to select the player's gender.
 - GetName: Prompts the user to enter the player's name.
 - NewGame: Initializes a new game with character attributes.
 '''
@@ -22,7 +22,7 @@ from src.modules.ArtAssets import DisplayDragon, DisplayPlanet, DisplayStars, Di
 from src.modules.CharacterCreation import SelectRace, SelectBirthsign, SelectClass
 from src.modules.MainMenu import MenuLine, ReturnToMainMenu
 
-from src.classes.Player import Player
+from src.classes.Player import Player # Change either to Player or old_Player
 
 import os
 import pickle
@@ -55,7 +55,6 @@ def DeleteGame() -> None:
     """
 
     ClearConsole()
-
     DisplayDragon()
 
     saves_directory = "saves"
@@ -72,9 +71,11 @@ def DeleteGame() -> None:
     MenuLine()
     print(" * Select a save to delete (Enter 0 to cancel):")
     MenuLine()
-    for idx, game in enumerate(saved_games, start = 1):
+
+    for index, game in enumerate(saved_games, start = 1):
         save_name = os.path.splitext(game)[0]
-        print(f" {idx}. {save_name}")
+        print(f" {index}. {save_name}")
+
     MenuLine()
 
     try:
@@ -85,9 +86,11 @@ def DeleteGame() -> None:
 
     if 0 < choice <= len(saved_games):
         selected_game = saved_games[choice - 1]
+
         MenuLine()
         print(f" * Are you sure you want to delete this save? (Y/N)")
         MenuLine()
+        
         confirm = str(input(" > "))
         
         MenuLine()
@@ -112,7 +115,7 @@ def LoadGame() -> None:
     ClearConsole()
     DisplayDragon()
 
-    save_files = [f for f in os.listdir(saves_directory) if f.endswith('.pkl')]
+    save_files = [file for file in os.listdir(saves_directory) if file.endswith('.pkl')]
 
     if not save_files:
         MenuLine()
@@ -128,9 +131,9 @@ def LoadGame() -> None:
     MenuLine()
     print(" * Choose a saved character to load:")
     MenuLine()
-    for i, save_file in enumerate(save_files, start = 1):
-        remove_pkl_from_name = os.path.splitext(save_file)[0]
-        print(f" {i}. {remove_pkl_from_name}")
+    for index, save_file in enumerate(save_files, start = 1):
+        player_save = os.path.splitext(save_file)[0]
+        print(f" {index}. {player_save}")
 
     while True:
         try:
@@ -163,35 +166,42 @@ def SaveGame(player: Player) -> None:
     with open('saves\\' + player.name + '.pkl', 'wb') as file:
         pickle.dump(player, file)
         
-def GetSex(name: str) -> str:
+def GetGender(name: str) -> str:
     """
-    Prompts the user to select the player's sex.
+    Prompts the user to select the player's gender.
     
     Parameters:
         name (string): Name of the player.
     
     Returns:
-        sex (string): Sex of the player.
+        gender (string): gender of the player.
     """
     
     DisplayDragon()
     MenuLine()
     print(" ^ New Game")
     MenuLine()
-    print(f" * {name}... what is your sex?")
+    print(f" * {name}... what is your gender?")
     MenuLine()
-    print(" 1. Male\n 2. Female")
+    print(" 1. Male\n 2. Female\n 3. Non-Binary\n 4. Transgender")
     MenuLine()
-    sex = input(" > ")
-    if sex == '1':
-        sex = 'Male'
-    elif sex == '2':
-        sex = 'Female'
+
+    gender = input(" > ")
+
+    if gender == '1':
+        gender = 'Male'
+    elif gender == '2':
+        gender = 'Female'
+    elif gender == '3':
+        gender = "Non-Binary"
+    elif gender == '4':
+        gender = "Transgender"
     else:
-        sex = 'Other'
+        gender = 'Undefined'
+        
     ClearConsole()
     
-    return sex
+    return gender
         
 def GetName() -> str:
     """
@@ -200,6 +210,8 @@ def GetName() -> str:
     Returns:
         name (string): Name of the player.
     """
+
+    nothing_entered = ""
     
     DisplayDragon()
     MenuLine()
@@ -207,9 +219,12 @@ def GetName() -> str:
     MenuLine()
     print(" * Enter thy name:")
     MenuLine()
+
     name = input(" > ")
-    if name == "":
+
+    if name == nothing_entered:
         name = 'Player'
+
     ClearConsole()
     
     return name
@@ -220,16 +235,16 @@ def NewGame() -> tuple[str, str, str, str, str, list]:
     
     Returns:
         tuple: A tuple containing the 
-        character's name, sex, race, birth sign, class, and a list of attributes.
+        character's name, gender, race, birth sign, class, and a list of attributes.
     """
 
     ClearConsole()
     
     name = GetName()
-    sex = GetSex(name)
+    gender = GetGender(name)
     
     race, attributes = SelectRace(name, DisplayPlanet, MenuLine)
     birth_sign, attributes = SelectBirthsign(name, attributes, DisplayStars, MenuLine)
     player_class, attributes = SelectClass(name, attributes, DisplayBattleAxe, MenuLine)
 
-    return name, sex, race, birth_sign, player_class, attributes
+    return name, gender, race, birth_sign, player_class, attributes
