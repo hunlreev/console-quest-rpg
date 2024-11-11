@@ -39,7 +39,7 @@ class Player:
         self.level = 1
         self.experience = 0
         self.next_experience = 100
-        self.attribute_points = 240 # Adding 240 attribute points so upon level up, you can max out your stats as if level 50 (max level) for gameplay testing
+        self.attribute_points = 0
         self.gold = 0
         self.location = "Small Town"
         self.description = self.player_class
